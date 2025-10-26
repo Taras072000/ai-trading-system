@@ -20,6 +20,14 @@ import config
 from config_params import CONFIG_PARAMS
 import json
 
+# Импорт для работы с локальными GGUF моделями
+try:
+    from llama_cpp import Llama
+    LLAMA_CPP_AVAILABLE = True
+except ImportError:
+    LLAMA_CPP_AVAILABLE = False
+    logging.warning("llama-cpp-python не установлен. Установите: pip install llama-cpp-python")
+
 logger = logging.getLogger(__name__)
 
 @dataclass
@@ -92,13 +100,19 @@ class MistralAI:
         self.model = None
         self.tokenizer = None
         self.memory_manager = MistralMemoryManager()
-        # Исправленный путь к GGUF модели
-        self.model_file = Path('models/mistral-7b-instruct-v0.1.Q4_K_M.gguf')
+        
+        # Путь к локальному GGUF файлу
+        self.model_file = Path('/Users/mac/Documents/Peper Binance v4/models/mistral-7b-instruct-v0.1.Q4_K_M.gguf')
         self.model_path = Path('models')  # Папка с моделями
         self.quantization = mistral_config.get('quantization', '4bit')
         self.max_tokens = mistral_config.get('max_tokens', 512)
         
-        logger.info("Mistral AI инициализирован с оптимизацией ресурсов")
+        # Настройки для llama-cpp-python
+        self.n_ctx = mistral_config.get('n_ctx', 2048)  # Размер контекста
+        self.n_threads = mistral_config.get('n_threads', 4)  # Количество потоков
+        self.use_local_model = True  # Флаг использования локальной модели
+        
+        logger.info("Mistral AI инициализирован для работы с локальным GGUF файлом")
     
     async def initialize(self):
         """Ленивая инициализация модуля (модель загружается только при необходимости)"""
@@ -108,17 +122,19 @@ class MistralAI:
         try:
             logger.info("Инициализация Mistral AI модуля...")
             
-            # Автозапуск Ollama сервера
-            await self._ensure_ollama_running()
+            # Проверяем доступность llama-cpp-python
+            if not LLAMA_CPP_AVAILABLE:
+                logger.error("llama-cpp-python не установлен. Установите: pip install llama-cpp-python")
+                return False
             
-            # Проверяем наличие модели
-            if not self._check_model_exists():
-                logger.warning("Модель Mistral 7B не найдена. Создаю заглушку.")
-                await self._create_model_placeholder()
+            # Проверяем наличие локального файла модели
+            if not self._check_local_model_exists():
+                logger.error(f"Локальный файл модели не найден: {self.model_file}")
+                return False
             
             # НЕ загружаем модель сразу - только при первом запросе
             self.is_initialized = True
-            logger.info("Mistral AI модуль инициализирован (модель будет загружена при необходимости)")
+            logger.info("Mistral AI модуль инициализирован (локальная модель будет загружена при необходимости)")
             return True
             
         except Exception as e:
@@ -259,8 +275,18 @@ class MistralAI:
             return False
     
     def _check_model_exists(self) -> bool:
-        """Проверка существования GGUF модели"""
+        """Проверка наличия модели (устаревший метод для Ollama)"""
         return self.model_file.exists()
+    
+    def _check_local_model_exists(self) -> bool:
+        """Проверка наличия локального GGUF файла модели"""
+        exists = self.model_file.exists()
+        if exists:
+            size_mb = self.model_file.stat().st_size / (1024 * 1024)
+            logger.info(f"✅ Найден локальный файл модели: {self.model_file} ({size_mb:.1f} MB)")
+        else:
+            logger.error(f"❌ Локальный файл модели не найден: {self.model_file}")
+        return exists
     
     async def _create_model_placeholder(self):
         """Создание заглушки для модели"""
@@ -310,37 +336,33 @@ class MistralAI:
         logger.info(f"Создана заглушка модели в {self.model_path}")
     
     async def _load_model_lazy(self):
-        """Ленивая загрузка GGUF модели только при необходимости"""
+        """Ленивая загрузка локальной GGUF модели только при необходимости"""
         if self.model is not None:
             return True
         
         try:
-            logger.info("Загрузка модели Mistral 7B GGUF...")
+            logger.info("Загрузка локальной модели Mistral 7B GGUF...")
             
-            if not self._check_model_exists():
-                logger.warning(f"GGUF модель не найдена по пути: {self.model_file}")
-                logger.info("Используется заглушка для демонстрации")
-                self.model = "placeholder"
-                self.tokenizer = "placeholder"
-                return True
+            if not self._check_local_model_exists():
+                logger.error(f"Локальный файл модели не найден: {self.model_file}")
+                return False
             
-            # Для работы с GGUF файлами нужна библиотека llama-cpp-python
-            try:
-                # Попытка загрузки реальной GGUF модели
-                logger.info(f"Найдена GGUF модель: {self.model_file}")
-                logger.info("Для полной поддержки установите: pip install llama-cpp-python")
-                
-                # Пока используем заглушку, но структура готова для реальной модели
-                self.model = f"gguf_model:{self.model_file}"
-                self.tokenizer = "gguf_tokenizer"
-                
-            except ImportError:
-                logger.warning("llama-cpp-python не установлен, используется заглушка")
-                self.model = "placeholder"
-                self.tokenizer = "placeholder"
+            if not LLAMA_CPP_AVAILABLE:
+                logger.error("llama-cpp-python не установлен. Установите: pip install llama-cpp-python")
+                return False
+            
+            # Загрузка реальной GGUF модели с помощью llama-cpp-python
+            logger.info(f"Загружаем GGUF модель: {self.model_file}")
+            
+            self.model = Llama(
+                model_path=str(self.model_file),
+                n_ctx=self.n_ctx,
+                n_threads=self.n_threads,
+                verbose=False  # Отключаем подробный вывод
+            )
             
             self.memory_manager.model_loaded = True
-            logger.info("Модель Mistral 7B готова к использованию")
+            logger.info("✅ Локальная модель Mistral 7B успешно загружена и готова к использованию")
             return True
             
         except Exception as e:
@@ -374,28 +396,29 @@ class MistralAI:
             max_tokens = max_tokens or self.max_tokens
             max_tokens = min(max_tokens, self.max_tokens)  # Не превышаем лимит
             
-            # Генерируем ответ
-            if self.model == "placeholder":
+            # Генерируем ответ с помощью локальной модели
+            if isinstance(self.model, Llama):
+                response_text = await self._generate_local_response(prompt, max_tokens)
+                tokens_used = max_tokens  # Приблизительно
+            else:
+                # Fallback если модель не загружена
                 response_text = await self._generate_placeholder_response(prompt)
                 tokens_used = len(prompt.split()) + len(response_text.split())
-            else:
-                # Здесь будет реальная генерация
-                response_text = await self._generate_real_response(prompt, max_tokens)
-                tokens_used = max_tokens  # Приблизительно
             
             processing_time = (datetime.now() - start_time).total_seconds()
             
             # Создаем ответ
             response = MistralResponse(
                 text=response_text,
-                confidence=0.8 if self.model != "placeholder" else 0.3,
+                confidence=0.8 if isinstance(self.model, Llama) else 0.3,
                 tokens_used=tokens_used,
                 processing_time=processing_time,
                 timestamp=datetime.now(),
                 metadata={
-                    'model_type': 'mistral_7b',
+                    'model_type': 'mistral_7b_local',
                     'quantization': self.quantization,
-                    'is_placeholder': self.model == "placeholder"
+                    'is_local_model': isinstance(self.model, Llama),
+                    'model_file': str(self.model_file)
                 }
             )
             
@@ -430,11 +453,38 @@ class MistralAI:
         else:
             return "Обработка запроса завершена. Для получения более точных результатов загрузите полную модель Mistral 7B."
     
+    async def _generate_local_response(self, prompt: str, max_tokens: int) -> str:
+        """Генерация ответа с помощью локальной GGUF модели"""
+        try:
+            if not isinstance(self.model, Llama):
+                logger.error("Локальная модель не загружена")
+                return await self._generate_placeholder_response(prompt)
+            
+            # Генерируем ответ с помощью llama-cpp-python
+            response = self.model(
+                prompt,
+                max_tokens=max_tokens,
+                temperature=0.3,
+                top_p=0.9,
+                echo=False,  # Не повторять промпт в ответе
+                stop=["</s>", "\n\n"]  # Стоп-токены
+            )
+            
+            # Извлекаем текст ответа
+            if response and 'choices' in response and len(response['choices']) > 0:
+                return response['choices'][0]['text'].strip()
+            else:
+                logger.warning("Пустой ответ от локальной модели")
+                return await self._generate_placeholder_response(prompt)
+                
+        except Exception as e:
+            logger.error(f"Ошибка генерации с локальной моделью: {e}")
+            return await self._generate_placeholder_response(prompt)
+    
     async def _generate_real_response(self, prompt: str, max_tokens: int) -> str:
-        """Генерация реального ответа (заглушка для будущей реализации)"""
-        # Здесь будет код для работы с реальной моделью
-        # Например, с использованием transformers или llama.cpp
-        return await self._generate_placeholder_response(prompt)
+        """Генерация реального ответа (устаревший метод для Ollama)"""
+        # Перенаправляем на локальную генерацию
+        return await self._generate_local_response(prompt, max_tokens)
     
     async def analyze_trading_opportunity(self, symbol: str, current_price: float, 
                                         price_data: List[Dict] = None, **kwargs) -> str:
@@ -443,26 +493,26 @@ class MistralAI:
             if not self.is_initialized:
                 await self.initialize()
             
-            # Проверяем доступность Ollama
-            if not await self._check_ollama_status():
-                logger.warning("⚠️ Ollama недоступен, используем fallback логику")
+            # Загружаем локальную модель при необходимости
+            if not await self._load_model_lazy():
+                logger.warning("⚠️ Локальная модель недоступна, используем fallback логику")
                 return await self._fallback_trading_analysis(symbol, current_price, price_data)
             
             # Создаем промпт для анализа
             prompt = self._create_trading_prompt(symbol, current_price, price_data)
             
             try:
-                # Отправляем запрос к Ollama API
-                response = await self._query_ollama_api(prompt)
+                # Генерируем ответ с помощью локальной модели
+                response = await self._generate_local_response(prompt, 150)
                 
                 # Извлекаем торговый сигнал из ответа
                 signal = self._extract_trading_signal(response)
                 
-                logger.info(f"🤖 Mistral AI сигнал для {symbol}: {signal}")
+                logger.info(f"🤖 Mistral AI (локальная модель) сигнал для {symbol}: {signal}")
                 return signal
                 
             except Exception as e:
-                logger.error(f"❌ Ошибка запроса к Ollama: {e}")
+                logger.error(f"❌ Ошибка запроса к локальной модели: {e}")
                 return await self._fallback_trading_analysis(symbol, current_price, price_data)
                 
         except Exception as e:
@@ -878,14 +928,14 @@ class MistralAI:
             logger.debug("Выполнена очистка памяти Mistral AI")
     
     async def unload_model(self):
-        """Выгрузка модели из памяти"""
-        if self.model and self.model != "placeholder":
-            logger.info("Выгрузка модели Mistral 7B из памяти...")
+        """Выгрузка локальной модели из памяти"""
+        if self.model and isinstance(self.model, Llama):
+            logger.info("Выгрузка локальной модели Mistral 7B из памяти...")
             self.model = None
             self.tokenizer = None
             self.memory_manager.model_loaded = False
             gc.collect()
-            logger.info("Модель выгружена")
+            logger.info("Локальная модель выгружена")
     
     async def cleanup(self):
         """Полная очистка ресурсов модуля"""
@@ -1068,12 +1118,15 @@ class MistralAI:
             }
 
     async def get_model_info(self) -> Dict[str, Any]:
-        """Информация о модели"""
+        """Информация о локальной модели"""
         return {
-            'model_path': str(self.model_path),
-            'model_exists': self._check_model_exists(),
+            'model_path': str(self.model_file),
+            'model_exists': self._check_local_model_exists(),
             'is_loaded': self.memory_manager.model_loaded,
-            'quantization': self.quantization,
+            'is_local_model': self.use_local_model,
+            'llama_cpp_available': LLAMA_CPP_AVAILABLE,
+            'n_ctx': self.n_ctx,
+            'n_threads': self.n_threads,
             'max_tokens': self.max_tokens,
             'memory_limit_mb': self.config.get('memory_limit_mb', 256)
         }
