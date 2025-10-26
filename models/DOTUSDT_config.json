@@ -1,0 +1,10 @@
+{
+  "lookback_period": 50,
+  "prediction_horizon": 1,
+  "min_confidence": 0.6,
+  "target_winrate": 0.75,
+  "risk_reward_ratio": 2.0,
+  "stop_loss_pct": 0.02,
+  "take_profit_pct": 0.04,
+  "days": 1095
+}

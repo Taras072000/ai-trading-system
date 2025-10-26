@@ -78,7 +78,7 @@ test_logs.txt
 *.sqlite3
 
 # Model files (if too large)
-models/
+# models/ - now included in repository
 trained_models/
 
 # Data files (if too large)
