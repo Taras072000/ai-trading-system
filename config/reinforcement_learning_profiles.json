@@ -1,0 +1,207 @@
+{
+  "profiles": {
+    "conservative": {
+      "description": "Консервативный профиль обучения с низким риском",
+      "reinforcement_learning": {
+        "learning_rate": 0.005,
+        "reward_multiplier": 1.2,
+        "punishment_multiplier": 0.9,
+        "weight_decay": 0.0005,
+        "confidence_threshold": 0.7
+      },
+      "ai_modules": {
+        "initial_weights": {
+          "trading_ai": 0.3,
+          "lava_ai": 0.4,
+          "lgbm_ai": 0.3,
+          "mistral_ai": 0.0
+        }
+      },
+      "testing": {
+        "min_trades_for_learning": 10,
+        "confidence_boost_threshold": 0.8,
+        "confidence_penalty_threshold": 0.3
+      }
+    },
+    "aggressive": {
+      "description": "Агрессивный профиль обучения с высоким потенциалом роста",
+      "reinforcement_learning": {
+        "learning_rate": 0.02,
+        "reward_multiplier": 2.0,
+        "punishment_multiplier": 0.6,
+        "weight_decay": 0.002,
+        "confidence_threshold": 0.5
+      },
+      "ai_modules": {
+        "initial_weights": {
+          "trading_ai": 0.2,
+          "lava_ai": 0.3,
+          "lgbm_ai": 0.5,
+          "mistral_ai": 0.0
+        }
+      },
+      "testing": {
+        "min_trades_for_learning": 3,
+        "confidence_boost_threshold": 0.6,
+        "confidence_penalty_threshold": 0.5
+      }
+    },
+    "balanced": {
+      "description": "Сбалансированный профиль обучения (по умолчанию)",
+      "reinforcement_learning": {
+        "learning_rate": 0.01,
+        "reward_multiplier": 1.5,
+        "punishment_multiplier": 0.8,
+        "weight_decay": 0.001,
+        "confidence_threshold": 0.6
+      },
+      "ai_modules": {
+        "initial_weights": {
+          "trading_ai": 0.25,
+          "lava_ai": 0.35,
+          "lgbm_ai": 0.40,
+          "mistral_ai": 0.0
+        }
+      },
+      "testing": {
+        "min_trades_for_learning": 5,
+        "confidence_boost_threshold": 0.7,
+        "confidence_penalty_threshold": 0.4
+      }
+    },
+    "experimental": {
+      "description": "Экспериментальный профиль с активным использованием Mistral AI",
+      "reinforcement_learning": {
+        "learning_rate": 0.015,
+        "reward_multiplier": 1.8,
+        "punishment_multiplier": 0.7,
+        "weight_decay": 0.0015,
+        "confidence_threshold": 0.55
+      },
+      "ai_modules": {
+        "initial_weights": {
+          "trading_ai": 0.2,
+          "lava_ai": 0.25,
+          "lgbm_ai": 0.35,
+          "mistral_ai": 0.2
+        }
+      },
+      "testing": {
+        "min_trades_for_learning": 4,
+        "confidence_boost_threshold": 0.65,
+        "confidence_penalty_threshold": 0.45
+      },
+      "mistral_server": {
+        "auto_start": true,
+        "timeout": 45,
+        "max_retries": 5
+      }
+    },
+    "quick_learning": {
+      "description": "Быстрое обучение для краткосрочных тестов",
+      "reinforcement_learning": {
+        "learning_rate": 0.03,
+        "reward_multiplier": 2.5,
+        "punishment_multiplier": 0.5,
+        "weight_decay": 0.003,
+        "confidence_threshold": 0.4
+      },
+      "ai_modules": {
+        "initial_weights": {
+          "trading_ai": 0.25,
+          "lava_ai": 0.25,
+          "lgbm_ai": 0.5,
+          "mistral_ai": 0.0
+        }
+      },
+      "testing": {
+        "default_test_days": 7,
+        "min_trades_for_learning": 2,
+        "confidence_boost_threshold": 0.55,
+        "confidence_penalty_threshold": 0.6
+      }
+    }
+  },
+  "symbol_specific_configs": {
+    "BTCUSDT": {
+      "description": "Специальная конфигурация для Bitcoin",
+      "reinforcement_learning": {
+        "learning_rate": 0.008,
+        "reward_multiplier": 1.3,
+        "punishment_multiplier": 0.85
+      },
+      "ai_modules": {
+        "weight_constraints": {
+          "trading_ai": {"min": 0.15, "max": 0.5},
+          "lava_ai": {"min": 0.2, "max": 0.6},
+          "lgbm_ai": {"min": 0.2, "max": 0.65}
+        }
+      }
+    },
+    "ETHUSDT": {
+      "description": "Специальная конфигурация для Ethereum",
+      "reinforcement_learning": {
+        "learning_rate": 0.012,
+        "reward_multiplier": 1.6,
+        "punishment_multiplier": 0.75
+      },
+      "ai_modules": {
+        "weight_constraints": {
+          "trading_ai": {"min": 0.1, "max": 0.6},
+          "lava_ai": {"min": 0.15, "max": 0.55},
+          "lgbm_ai": {"min": 0.25, "max": 0.7}
+        }
+      }
+    },
+    "SOLUSDT": {
+      "description": "Специальная конфигурация для Solana (высокая волатильность)",
+      "reinforcement_learning": {
+        "learning_rate": 0.015,
+        "reward_multiplier": 2.0,
+        "punishment_multiplier": 0.6,
+        "confidence_threshold": 0.65
+      },
+      "ai_modules": {
+        "weight_constraints": {
+          "trading_ai": {"min": 0.2, "max": 0.6},
+          "lava_ai": {"min": 0.1, "max": 0.5},
+          "lgbm_ai": {"min": 0.3, "max": 0.7}
+        }
+      },
+      "testing": {
+        "min_trades_for_learning": 3,
+        "confidence_boost_threshold": 0.75,
+        "confidence_penalty_threshold": 0.35
+      }
+    }
+  },
+  "time_based_configs": {
+    "asian_session": {
+      "description": "Конфигурация для азиатской торговой сессии",
+      "active_hours": "00:00-08:00",
+      "reinforcement_learning": {
+        "learning_rate": 0.008,
+        "reward_multiplier": 1.2,
+        "punishment_multiplier": 0.9
+      }
+    },
+    "european_session": {
+      "description": "Конфигурация для европейской торговой сессии",
+      "active_hours": "08:00-16:00",
+      "reinforcement_learning": {
+        "learning_rate": 0.012,
+        "reward_multiplier": 1.6,
+        "punishment_multiplier": 0.8
+      }
+    },
+    "american_session": {
+      "description": "Конфигурация для американской торговой сессии",
+      "active_hours": "16:00-24:00",
+      "reinforcement_learning": {
+        "learning_rate": 0.015,
+        "reward_multiplier": 1.8,
+        "punishment_multiplier": 0.7
+      }
+    }
+  }
+}

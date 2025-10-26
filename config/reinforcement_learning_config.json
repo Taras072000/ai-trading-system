@@ -1,0 +1,66 @@
+{
+  "reinforcement_learning": {
+    "enabled": true,
+    "learning_rate": 0.01,
+    "reward_multiplier": 1.5,
+    "punishment_multiplier": 0.8,
+    "weight_decay": 0.001,
+    "min_weight": 0.05,
+    "max_weight": 0.8,
+    "confidence_threshold": 0.6,
+    "session_auto_save": true,
+    "session_save_interval": 10,
+    "max_sessions_history": 50
+  },
+  "ai_modules": {
+    "initial_weights": {
+      "trading_ai": 0.25,
+      "lava_ai": 0.35,
+      "lgbm_ai": 0.40,
+      "mistral_ai": 0.0
+    },
+    "weight_constraints": {
+      "trading_ai": {"min": 0.1, "max": 0.6},
+      "lava_ai": {"min": 0.1, "max": 0.6},
+      "lgbm_ai": {"min": 0.1, "max": 0.7},
+      "mistral_ai": {"min": 0.0, "max": 0.5}
+    }
+  },
+  "mistral_server": {
+    "auto_start": true,
+    "model_name": "mistral:latest",
+    "host": "localhost",
+    "port": 11434,
+    "timeout": 30,
+    "max_retries": 3,
+    "health_check_interval": 60
+  },
+  "testing": {
+    "default_symbols": ["BTCUSDT", "ETHUSDT", "BNBUSDT", "ADAUSDT", "SOLUSDT"],
+    "default_timeframe": "1h",
+    "default_test_days": 30,
+    "min_trades_for_learning": 5,
+    "confidence_boost_threshold": 0.7,
+    "confidence_penalty_threshold": 0.4
+  },
+  "analytics": {
+    "auto_generate_reports": true,
+    "save_detailed_trades": true,
+    "plot_formats": ["html", "png"],
+    "report_frequency": "after_each_session",
+    "comparison_sessions_limit": 5
+  },
+  "persistence": {
+    "database_path": "data/reinforcement_learning.db",
+    "backup_frequency": "daily",
+    "max_backups": 30,
+    "compress_old_data": true
+  },
+  "logging": {
+    "level": "INFO",
+    "file_path": "logs/reinforcement_learning.log",
+    "max_file_size": "10MB",
+    "backup_count": 5,
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  }
+}

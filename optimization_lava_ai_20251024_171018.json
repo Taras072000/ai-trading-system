@@ -1,0 +1,666 @@
+{
+  "model_name": "lava_ai",
+  "best_params": {
+    "confidence_threshold": 0.4,
+    "take_profit": 1.5,
+    "stop_loss": 0.8
+  },
+  "best_score": 0.5005252552267832,
+  "win_rate": 0.5,
+  "total_trades": 4,
+  "profit_factor": 1.04174617029781,
+  "max_drawdown": 3.0654439507039677,
+  "sharpe_ratio": 0.019710879175981754,
+  "all_results": [
+    {
+      "score": 0.2858859167625706,
+      "win_rate": 0.16666666666666666,
+      "total_trades": 6,
+      "profit_factor": 0.29599015838527715,
+      "max_drawdown": 4.256303497610521,
+      "sharpe_ratio": -0.6051935410425612,
+      "params": {
+        "confidence_threshold": 0.3,
+        "take_profit": 1.5,
+        "stop_loss": 0.8
+      }
+    },
+    {
+      "score": 0.3556630109984341,
+      "win_rate": 0.3333333333333333,
+      "total_trades": 3,
+      "profit_factor": 0.4268690580920659,
+      "max_drawdown": 4.183673857687881,
+      "sharpe_ratio": -0.43309457788951017,
+      "params": {
+        "confidence_threshold": 0.3,
+        "take_profit": 1.5,
+        "stop_loss": 1.5
+      }
+    },
+    {
+      "score": 0.36289309876938025,
+      "win_rate": 0.3333333333333333,
+      "total_trades": 3,
+      "profit_factor": 0.47506964323170686,
+      "max_drawdown": 4.183673857687881,
+      "sharpe_ratio": -0.3774060696159154,
+      "params": {
+        "confidence_threshold": 0.3,
+        "take_profit": 2.0,
+        "stop_loss": 1.0
+      }
+    },
+    {
+      "score": 0.18984014376062974,
+      "win_rate": 0.0,
+      "total_trades": 2,
+      "profit_factor": 0.0,
+      "max_drawdown": 5.079928119685133,
+      "sharpe_ratio": -17.682164399725792,
+      "params": {
+        "confidence_threshold": 0.3,
+        "take_profit": 2.0,
+        "stop_loss": 2.0
+      }
+    },
+    {
+      "score": 0.19163265228462426,
+      "win_rate": 0.0,
+      "total_trades": 2,
+      "profit_factor": 0.0,
+      "max_drawdown": 4.183673857687881,
+      "sharpe_ratio": -6.736531534553769,
+      "params": {
+        "confidence_threshold": 0.3,
+        "take_profit": 2.5,
+        "stop_loss": 1.2
+      }
+    },
+    {
+      "score": 0.19158291813824846,
+      "win_rate": 0.0,
+      "total_trades": 3,
+      "profit_factor": 0.0,
+      "max_drawdown": 4.208540930875778,
+      "sharpe_ratio": -3.6628916658065727,
+      "params": {
+        "confidence_threshold": 0.3,
+        "take_profit": 3.0,
+        "stop_loss": 0.8
+      }
+    },
+    {
+      "score": 0.19163265228462426,
+      "win_rate": 0.0,
+      "total_trades": 2,
+      "profit_factor": 0.0,
+      "max_drawdown": 4.183673857687881,
+      "sharpe_ratio": -6.736531534553769,
+      "params": {
+        "confidence_threshold": 0.3,
+        "take_profit": 3.0,
+        "stop_loss": 1.5
+      }
+    },
+    {
+      "score": 0.19163265228462426,
+      "win_rate": 0.0,
+      "total_trades": 2,
+      "profit_factor": 0.0,
+      "max_drawdown": 4.183673857687881,
+      "sharpe_ratio": -6.736531534553769,
+      "params": {
+        "confidence_threshold": 0.3,
+        "take_profit": 4.0,
+        "stop_loss": 1.0
+      }
+    },
+    {
+      "score": 0.18984014376062974,
+      "win_rate": 0.0,
+      "total_trades": 2,
+      "profit_factor": 0.0,
+      "max_drawdown": 5.079928119685133,
+      "sharpe_ratio": -17.682164399725792,
+      "params": {
+        "confidence_threshold": 0.3,
+        "take_profit": 4.0,
+        "stop_loss": 2.0
+      }
+    },
+    {
+      "score": 0.19163265228462426,
+      "win_rate": 0.0,
+      "total_trades": 2,
+      "profit_factor": 0.0,
+      "max_drawdown": 4.183673857687881,
+      "sharpe_ratio": -6.736531534553769,
+      "params": {
+        "confidence_threshold": 0.3,
+        "take_profit": 5.0,
+        "stop_loss": 1.2
+      }
+    },
+    {
+      "score": 0.5005252552267832,
+      "win_rate": 0.5,
+      "total_trades": 4,
+      "profit_factor": 1.04174617029781,
+      "max_drawdown": 3.0654439507039677,
+      "sharpe_ratio": 0.019710879175981754,
+      "params": {
+        "confidence_threshold": 0.4,
+        "take_profit": 1.5,
+        "stop_loss": 0.8
+      }
+    },
+    {
+      "score": 0.361920750303017,
+      "win_rate": 0.3333333333333333,
+      "total_trades": 3,
+      "profit_factor": 0.46159643169543124,
+      "max_drawdown": 3.659357225648827,
+      "sharpe_ratio": -0.3916619720982586,
+      "params": {
+        "confidence_threshold": 0.4,
+        "take_profit": 1.5,
+        "stop_loss": 1.5
+      }
+    },
+    {
+      "score": 0.19601212025857873,
+      "win_rate": 0.0,
+      "total_trades": 1,
+      "profit_factor": 0.0,
+      "max_drawdown": 1.9939398707106533,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.4,
+        "take_profit": 2.0,
+        "stop_loss": 1.0
+      }
+    },
+    {
+      "score": 0.19597608735476127,
+      "win_rate": 0.0,
+      "total_trades": 1,
+      "profit_factor": 0.0,
+      "max_drawdown": 2.011956322619369,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.4,
+        "take_profit": 2.0,
+        "stop_loss": 2.0
+      }
+    },
+    {
+      "score": 0.19601212025857873,
+      "win_rate": 0.0,
+      "total_trades": 1,
+      "profit_factor": 0.0,
+      "max_drawdown": 1.9939398707106533,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.4,
+        "take_profit": 2.5,
+        "stop_loss": 1.2
+      }
+    },
+    {
+      "score": 0.1919760837068566,
+      "win_rate": 0.0,
+      "total_trades": 3,
+      "profit_factor": 0.0,
+      "max_drawdown": 4.011958146571715,
+      "sharpe_ratio": -2.9588007304821278,
+      "params": {
+        "confidence_threshold": 0.4,
+        "take_profit": 3.0,
+        "stop_loss": 0.8
+      }
+    },
+    {
+      "score": 0.19601212025857873,
+      "win_rate": 0.0,
+      "total_trades": 1,
+      "profit_factor": 0.0,
+      "max_drawdown": 1.9939398707106533,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.4,
+        "take_profit": 3.0,
+        "stop_loss": 1.5
+      }
+    },
+    {
+      "score": 0.19601212025857873,
+      "win_rate": 0.0,
+      "total_trades": 1,
+      "profit_factor": 0.0,
+      "max_drawdown": 1.9939398707106533,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.4,
+        "take_profit": 4.0,
+        "stop_loss": 1.0
+      }
+    },
+    {
+      "score": 0.19597608735476127,
+      "win_rate": 0.0,
+      "total_trades": 1,
+      "profit_factor": 0.0,
+      "max_drawdown": 2.011956322619369,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.4,
+        "take_profit": 4.0,
+        "stop_loss": 2.0
+      }
+    },
+    {
+      "score": 0.19601212025857873,
+      "win_rate": 0.0,
+      "total_trades": 1,
+      "profit_factor": 0.0,
+      "max_drawdown": 1.9939398707106533,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.4,
+        "take_profit": 5.0,
+        "stop_loss": 1.2
+      }
+    },
+    {
+      "score": 0.4102100865907244,
+      "win_rate": 0.5,
+      "total_trades": 2,
+      "profit_factor": 0.45171164682250187,
+      "max_drawdown": 3.7733302163254447,
+      "sharpe_ratio": -0.37768406306967955,
+      "params": {
+        "confidence_threshold": 0.5,
+        "take_profit": 1.5,
+        "stop_loss": 0.8
+      }
+    },
+    {
+      "score": 0.4102100865907244,
+      "win_rate": 0.5,
+      "total_trades": 2,
+      "profit_factor": 0.45171164682250187,
+      "max_drawdown": 3.7733302163254447,
+      "sharpe_ratio": -0.37768406306967955,
+      "params": {
+        "confidence_threshold": 0.5,
+        "take_profit": 1.5,
+        "stop_loss": 1.5
+      }
+    },
+    {
+      "score": 0.19601212025857873,
+      "win_rate": 0.0,
+      "total_trades": 1,
+      "profit_factor": 0.0,
+      "max_drawdown": 1.9939398707106533,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.5,
+        "take_profit": 2.0,
+        "stop_loss": 1.0
+      }
+    },
+    {
+      "score": 0.19586028695394334,
+      "win_rate": 0.0,
+      "total_trades": 1,
+      "profit_factor": 0.0,
+      "max_drawdown": 2.0698565230283297,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.5,
+        "take_profit": 2.0,
+        "stop_loss": 2.0
+      }
+    },
+    {
+      "score": 0.19601212025857873,
+      "win_rate": 0.0,
+      "total_trades": 1,
+      "profit_factor": 0.0,
+      "max_drawdown": 1.9939398707106533,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.5,
+        "take_profit": 2.5,
+        "stop_loss": 1.2
+      }
+    },
+    {
+      "score": 0.19601212025857873,
+      "win_rate": 0.0,
+      "total_trades": 1,
+      "profit_factor": 0.0,
+      "max_drawdown": 1.9939398707106533,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.5,
+        "take_profit": 3.0,
+        "stop_loss": 0.8
+      }
+    },
+    {
+      "score": 0.19601212025857873,
+      "win_rate": 0.0,
+      "total_trades": 1,
+      "profit_factor": 0.0,
+      "max_drawdown": 1.9939398707106533,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.5,
+        "take_profit": 3.0,
+        "stop_loss": 1.5
+      }
+    },
+    {
+      "score": 0.19601212025857873,
+      "win_rate": 0.0,
+      "total_trades": 1,
+      "profit_factor": 0.0,
+      "max_drawdown": 1.9939398707106533,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.5,
+        "take_profit": 4.0,
+        "stop_loss": 1.0
+      }
+    },
+    {
+      "score": 0.19586028695394334,
+      "win_rate": 0.0,
+      "total_trades": 1,
+      "profit_factor": 0.0,
+      "max_drawdown": 2.0698565230283297,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.5,
+        "take_profit": 4.0,
+        "stop_loss": 2.0
+      }
+    },
+    {
+      "score": 0.19601212025857873,
+      "win_rate": 0.0,
+      "total_trades": 1,
+      "profit_factor": 0.0,
+      "max_drawdown": 1.9939398707106533,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.5,
+        "take_profit": 5.0,
+        "stop_loss": 1.2
+      }
+    },
+    {
+      "score": 0,
+      "win_rate": 0,
+      "total_trades": 0,
+      "profit_factor": 0,
+      "max_drawdown": 0,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.6,
+        "take_profit": 1.5,
+        "stop_loss": 0.8
+      }
+    },
+    {
+      "score": 0,
+      "win_rate": 0,
+      "total_trades": 0,
+      "profit_factor": 0,
+      "max_drawdown": 0,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.6,
+        "take_profit": 1.5,
+        "stop_loss": 1.5
+      }
+    },
+    {
+      "score": 0,
+      "win_rate": 0,
+      "total_trades": 0,
+      "profit_factor": 0,
+      "max_drawdown": 0,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.6,
+        "take_profit": 2.0,
+        "stop_loss": 1.0
+      }
+    },
+    {
+      "score": 0,
+      "win_rate": 0,
+      "total_trades": 0,
+      "profit_factor": 0,
+      "max_drawdown": 0,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.6,
+        "take_profit": 2.0,
+        "stop_loss": 2.0
+      }
+    },
+    {
+      "score": 0,
+      "win_rate": 0,
+      "total_trades": 0,
+      "profit_factor": 0,
+      "max_drawdown": 0,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.6,
+        "take_profit": 2.5,
+        "stop_loss": 1.2
+      }
+    },
+    {
+      "score": 0,
+      "win_rate": 0,
+      "total_trades": 0,
+      "profit_factor": 0,
+      "max_drawdown": 0,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.6,
+        "take_profit": 3.0,
+        "stop_loss": 0.8
+      }
+    },
+    {
+      "score": 0,
+      "win_rate": 0,
+      "total_trades": 0,
+      "profit_factor": 0,
+      "max_drawdown": 0,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.6,
+        "take_profit": 3.0,
+        "stop_loss": 1.5
+      }
+    },
+    {
+      "score": 0,
+      "win_rate": 0,
+      "total_trades": 0,
+      "profit_factor": 0,
+      "max_drawdown": 0,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.6,
+        "take_profit": 4.0,
+        "stop_loss": 1.0
+      }
+    },
+    {
+      "score": 0,
+      "win_rate": 0,
+      "total_trades": 0,
+      "profit_factor": 0,
+      "max_drawdown": 0,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.6,
+        "take_profit": 4.0,
+        "stop_loss": 2.0
+      }
+    },
+    {
+      "score": 0,
+      "win_rate": 0,
+      "total_trades": 0,
+      "profit_factor": 0,
+      "max_drawdown": 0,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.6,
+        "take_profit": 5.0,
+        "stop_loss": 1.2
+      }
+    },
+    {
+      "score": 0,
+      "win_rate": 0,
+      "total_trades": 0,
+      "profit_factor": 0,
+      "max_drawdown": 0,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.7,
+        "take_profit": 1.5,
+        "stop_loss": 0.8
+      }
+    },
+    {
+      "score": 0,
+      "win_rate": 0,
+      "total_trades": 0,
+      "profit_factor": 0,
+      "max_drawdown": 0,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.7,
+        "take_profit": 1.5,
+        "stop_loss": 1.5
+      }
+    },
+    {
+      "score": 0,
+      "win_rate": 0,
+      "total_trades": 0,
+      "profit_factor": 0,
+      "max_drawdown": 0,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.7,
+        "take_profit": 2.0,
+        "stop_loss": 1.0
+      }
+    },
+    {
+      "score": 0,
+      "win_rate": 0,
+      "total_trades": 0,
+      "profit_factor": 0,
+      "max_drawdown": 0,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.7,
+        "take_profit": 2.0,
+        "stop_loss": 2.0
+      }
+    },
+    {
+      "score": 0,
+      "win_rate": 0,
+      "total_trades": 0,
+      "profit_factor": 0,
+      "max_drawdown": 0,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.7,
+        "take_profit": 2.5,
+        "stop_loss": 1.2
+      }
+    },
+    {
+      "score": 0,
+      "win_rate": 0,
+      "total_trades": 0,
+      "profit_factor": 0,
+      "max_drawdown": 0,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.7,
+        "take_profit": 3.0,
+        "stop_loss": 0.8
+      }
+    },
+    {
+      "score": 0,
+      "win_rate": 0,
+      "total_trades": 0,
+      "profit_factor": 0,
+      "max_drawdown": 0,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.7,
+        "take_profit": 3.0,
+        "stop_loss": 1.5
+      }
+    },
+    {
+      "score": 0,
+      "win_rate": 0,
+      "total_trades": 0,
+      "profit_factor": 0,
+      "max_drawdown": 0,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.7,
+        "take_profit": 4.0,
+        "stop_loss": 1.0
+      }
+    },
+    {
+      "score": 0,
+      "win_rate": 0,
+      "total_trades": 0,
+      "profit_factor": 0,
+      "max_drawdown": 0,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.7,
+        "take_profit": 4.0,
+        "stop_loss": 2.0
+      }
+    },
+    {
+      "score": 0,
+      "win_rate": 0,
+      "total_trades": 0,
+      "profit_factor": 0,
+      "max_drawdown": 0,
+      "sharpe_ratio": 0,
+      "params": {
+        "confidence_threshold": 0.7,
+        "take_profit": 5.0,
+        "stop_loss": 1.2
+      }
+    }
+  ]
+}
