@@ -16,6 +16,7 @@ import os
 import subprocess
 import time
 from pathlib import Path
+import argparse
 
 # Импорты AI модулей
 from ai_modules.multi_ai_orchestrator import MultiAIOrchestrator
@@ -1142,17 +1143,17 @@ class DynamicHoldingTimeCalculator:
 @dataclass
 class TestConfig:
     """Конфигурация для тестирования винрейта в реальных рыночных условиях"""
-    test_period_days: int = 14 # Период тестирования в днях - БЫСТРАЯ ПРОВЕРКА ТОП-5 ПАР
+    test_period_days: int = 7 # Период тестирования в днях - АГРЕССИВНАЯ СТРАТЕГИЯ
     start_balance: float = 100.0
     symbols: List[str] = None
     commission_rate: float = 0.001  # 0.1% комиссия
-    position_size_percent: float = 0.02  # 2% от баланса на сделку (КОНСЕРВАТИВНЫЙ подход для снижения риска)
+    position_size_percent: float = 0.10  # 10% от баланса на сделку (АГРЕССИВНАЯ СТРАТЕГИЯ для максимального P&L)
     min_position_value_usdt: float = 5.0  # Минимальный объем позиции 5 USDT для тестирования
-    leverage_multiplier: float = 3.0  # Кредитное плечо 3x (УМЕРЕННОЕ плечо для контроля риска)
+    leverage_multiplier: float = 10.0  # Кредитное плечо 10x (АГРЕССИВНАЯ СТРАТЕГИЯ для максимального P&L)
     
-    # Параметры для реальной торговли - КОНСЕРВАТИВНЫЕ НАСТРОЙКИ ДЛЯ КОНТРОЛЯ РИСКА
-    stop_loss_percent: float = 0.016  # ОПТИМИЗИРОВАНО: стоп-лосс 1.6% (улучшенное соотношение риск/доходность)
-    take_profit_percent: float = 0.048  # ОПТИМИЗИРОВАНО: тейк-профит 4.8% (соотношение 1:3)
+    # Параметры для реальной торговли - ОПТИМИЗИРОВАНЫ ДЛЯ ПОВЫШЕНИЯ P&L
+    stop_loss_percent: float = 0.015  # АГРЕССИВНАЯ СТРАТЕГИЯ: стоп-лосс 1.5% (баланс риска и прибыли)
+    take_profit_percent: float = 0.060  # УВЕЛИЧЕНО: тейк-профит 6.0% (соотношение 1:5 для лучшего P&L)
     
     # Trailing Stop параметры
     use_trailing_stop: bool = True  # Использовать trailing stop
@@ -1161,10 +1162,10 @@ class TestConfig:
     
     # СЕТКА ТЕЙК-ПРОФИТОВ (частичное закрытие позиций) - АГРЕССИВНАЯ СЕТКА
     use_take_profit_grid: bool = True  # Использовать сетку тейк-профитов
-    take_profit_levels: List[float] = None  # Уровни тейк-профитов [2%, 3%, 4%, 5%]
-    take_profit_portions: List[float] = None  # Доли закрытия позиции [25%, 25%, 25%, 25%]
+    take_profit_levels: List[float] = None  # Уровни тейк-профитов [2%, 3%, 4%, 5%] - АГРЕССИВНАЯ СЕТКА
+    take_profit_portions: List[float] = None  # Доли закрытия позиции [25%, 25%, 25%, 25%] - РАВНОМЕРНОЕ РАСПРЕДЕЛЕНИЕ
     
-    min_confidence: float = 0.25  # ВОЗВРАТ К РАБОЧИМ ПАРАМЕТРАМ: AI модели дают низкую уверенность
+    min_confidence: float = 0.20  # КОМБИНИРОВАННЫЙ ПОДХОД: снижено до 20%
     min_volatility: float = 0.0  # ВОЗВРАТ К РАБОЧИМ ПАРАМЕТРАМ: отключаем для активности
     min_volume_ratio: float = 0.1  # ВОЗВРАТ К РАБОЧИМ ПАРАМЕТРАМ: мягкий фильтр
     min_hold_hours: int = 1  # Минимальное время удержания позиции
@@ -1198,6 +1199,9 @@ class TestConfig:
     timezone: str = "UTC"  # Временная зона
     analyze_best_hours: bool = True  # Анализировать лучшие часы автоматически
     
+    # Параметры очистки кеша
+    clear_cache_after_test: bool = True  # Очищать кеш после завершения всего тестирования
+    
     # Фильтр по объемам торгов - НОВЫЙ ФИЛЬТР ДЛЯ АКТИВНЫХ ТОРГОВ
     use_volume_filter: bool = True  # Использовать фильтр по объемам торгов
     min_daily_volume_usdt: float = 5000000.0  # Минимальный дневной объем торгов 5M USDT
@@ -1206,6 +1210,7 @@ class TestConfig:
     # Режим отладки
     debug_mode: bool = True  # Включить детальное логирование
     use_strict_filters: bool = False  # ОТКЛЮЧИТЬ строгие фильтры для сбалансированного подхода
+    clear_cache_after_test: bool = True  # Очищать кеш после завершения тестирования
     
     def __post_init__(self):
         if self.symbols is None:
@@ -1215,15 +1220,15 @@ class TestConfig:
             # ZRXUSDT (20%) - 🥉 +29.27% ROI, 42.9% винрейт (хороший ROI)
             # APTUSDT (15%) - +23.80% ROI, 47.2% винрейт (сбалансированные показатели)
             # SANDUSDT (10%) - +17.91% ROI, 43.6% винрейт (дополнительная диверсификация)
-            self.symbols = ['TAOUSDT', 'CRVUSDT', 'ZRXUSDT', 'APTUSDT', 'SANDUSDT']  # Топ-5 самых прибыльных пар
+            self.symbols = ['ZRXUSDT', 'SANDUSDT', 'TAOUSDT']  # СУПЕР-ОПТИМИЗИРОВАННЫЙ СПИСОК: исключены убыточные APTUSDT и CRVUSDT
         if self.enabled_ai_models is None:
-            self.enabled_ai_models = ['trading_ai', 'lava_ai', 'lgbm_ai', 'mistral_ai', 'reinforcement_learning_engine']  # ВСЕ 5 МОДЕЛЕЙ для максимального консенсуса
+            self.enabled_ai_models = ['lava_ai', 'trading_ai', 'lgbm_ai']  # ФОКУС НА ЛУЧШИЕ МОДЕЛИ: lava_ai (83.3% точность), trading_ai, lgbm_ai
         
-        # Инициализация ОПТИМИЗИРОВАННОЙ сетки тейк-профитов для максимального профита
+        # Инициализация АГРЕССИВНОЙ сетки тейк-профитов для максимального профита
         if self.take_profit_levels is None:
-            self.take_profit_levels = [0.020, 0.025, 0.030]  # TP1=2.0%, TP2=2.5%, TP3=3.0% - оптимизированная сетка
+            self.take_profit_levels = [0.020, 0.030, 0.040, 0.050]  # TP1=2.0%, TP2=3.0%, TP3=4.0%, TP4=5.0% - агрессивная сетка
         if self.take_profit_portions is None:
-            self.take_profit_portions = [0.40, 0.35, 0.25]  # Сбалансированное закрытие: 40%, 35%, 25%
+            self.take_profit_portions = [0.25, 0.25, 0.25, 0.25]  # Равномерное закрытие: 25%, 25%, 25%, 25%
         
         # Инициализация фильтра по времени - ОПТИМАЛЬНЫЕ часы для 70-80% винрейта (UTC)
         if self.trading_hours is None and self.use_time_filter:
@@ -1311,6 +1316,150 @@ class RealWinrateTester:
         # Инициализация визуализатора для детальных отчетов
         self.trade_visualizer = DetailedTradeVisualizer()
         logger.info("Инициализирован визуализатор детальных торговых отчетов")
+    
+    def clear_all_caches(self):
+        """Полная очистка всех кешей после тестирования символа"""
+        try:
+            if not self.config.clear_cache_after_test:
+                logger.debug("Очистка кеша отключена в конфигурации")
+                return
+            
+            logger.info("🧹 Начинаю очистку всех кешей...")
+            
+            # Очистка кешей AI модулей
+            cleared_modules = []
+            
+            # Очистка LavaAI
+            if hasattr(self, 'ai_models') and 'lava_ai' in self.ai_models:
+                if hasattr(self.ai_models['lava_ai'], 'clear_all_cache'):
+                    self.ai_models['lava_ai'].clear_all_cache()
+                    cleared_modules.append('LavaAI')
+            
+            # Очистка MistralAI
+            if hasattr(self, 'ai_models') and 'mistral_ai' in self.ai_models:
+                if hasattr(self.ai_models['mistral_ai'], 'clear_all_cache'):
+                    self.ai_models['mistral_ai'].clear_all_cache()
+                    cleared_modules.append('MistralAI')
+            
+            # Очистка AIManager
+            if hasattr(ai_manager, 'clear_cache'):
+                ai_manager.clear_cache()
+                cleared_modules.append('AIManager')
+            
+            # Очистка кеша исторических данных
+            if hasattr(self.historical_manager, 'clear_cache'):
+                self.historical_manager.clear_cache()
+                cleared_modules.append('HistoricalDataManager')
+            
+            # Очистка всех файлов кеша исторических данных
+            self._clear_all_cache_files()
+            cleared_modules.append('CacheFiles')
+            
+            # Очистка временных данных
+            if hasattr(self, 'temp_data'):
+                self.temp_data.clear()
+            
+            # Принудительная сборка мусора
+            import gc
+            gc.collect()
+            
+            if cleared_modules:
+                logger.info(f"✅ Кеши очищены для модулей: {', '.join(cleared_modules)}")
+            else:
+                logger.info("✅ Очистка кешей завершена (модули не найдены)")
+            
+        except Exception as e:
+            logger.error(f"❌ Ошибка очистки кешей: {e}")
+    
+    def _clear_all_cache_files(self):
+        """Полная очистка всех файлов кеша исторических данных"""
+        try:
+            import glob
+            
+            logger.info("🧹 Очистка всех файлов кеша исторических данных...")
+            
+            # Создаем папку data если её нет
+            os.makedirs("data", exist_ok=True)
+            
+            # Удаляем все кеш файлы
+            pattern = "data/*_1h_cache_*d.csv"
+            cache_files = glob.glob(pattern)
+            
+            removed_count = 0
+            for cache_file in cache_files:
+                try:
+                    os.remove(cache_file)
+                    removed_count += 1
+                    logger.debug(f"🗑️ Удален кеш файл: {cache_file}")
+                except Exception as e:
+                    logger.warning(f"⚠️ Не удалось удалить файл {cache_file}: {e}")
+            
+            if removed_count > 0:
+                logger.info(f"✅ Удалено {removed_count} файлов кеша исторических данных")
+            else:
+                logger.info("✅ Файлы кеша исторических данных не найдены")
+                
+        except Exception as e:
+            logger.error(f"❌ Ошибка очистки файлов кеша: {e}")
+    
+    def clear_old_cache_files(self, symbol: str = None):
+        """Очистка старых кеш файлов при изменении периода тестирования"""
+        try:
+            import glob
+            
+            logger.info("🧹 Очистка старых кеш файлов...")
+            
+            # Создаем папку data если её нет
+            os.makedirs("data", exist_ok=True)
+            
+            # Текущий период кеширования
+            current_cache_days = self.config.test_period_days + 50
+            
+            if symbol:
+                # Очищаем кеш файлы для конкретного символа
+                pattern = f"data/{symbol}_1h_cache_*d.csv"
+                cache_files = glob.glob(pattern)
+                
+                for cache_file in cache_files:
+                    # Извлекаем количество дней из имени файла
+                    try:
+                        filename = os.path.basename(cache_file)
+                        days_part = filename.split('_cache_')[1].split('d.csv')[0]
+                        file_cache_days = int(days_part)
+                        
+                        # Удаляем файл если он не соответствует текущему периоду
+                        if file_cache_days != current_cache_days:
+                            os.remove(cache_file)
+                            logger.info(f"🗑️ Удален старый кеш файл: {cache_file} ({file_cache_days} дней)")
+                    except (ValueError, IndexError) as e:
+                        logger.warning(f"⚠️ Не удалось обработать файл {cache_file}: {e}")
+            else:
+                # Очищаем все старые кеш файлы
+                pattern = "data/*_1h_cache_*d.csv"
+                cache_files = glob.glob(pattern)
+                
+                removed_count = 0
+                for cache_file in cache_files:
+                    try:
+                        filename = os.path.basename(cache_file)
+                        days_part = filename.split('_cache_')[1].split('d.csv')[0]
+                        file_cache_days = int(days_part)
+                        
+                        # Удаляем файл если он не соответствует текущему периоду
+                        if file_cache_days != current_cache_days:
+                            os.remove(cache_file)
+                            removed_count += 1
+                            logger.debug(f"🗑️ Удален старый кеш файл: {cache_file} ({file_cache_days} дней)")
+                    except (ValueError, IndexError) as e:
+                        logger.warning(f"⚠️ Не удалось обработать файл {cache_file}: {e}")
+                
+                if removed_count > 0:
+                    logger.info(f"✅ Удалено {removed_count} старых кеш файлов")
+                else:
+                    logger.info("✅ Старые кеш файлы не найдены")
+                    
+        except Exception as e:
+            logger.error(f"❌ Ошибка очистки старых кеш файлов: {e}")
         
     async def run_model_diagnostics(self):
         """Запуск диагностики всех AI моделей"""
@@ -1569,8 +1718,14 @@ class RealWinrateTester:
         try:
             logger.info(f"📊 Загрузка данных для {symbol}...")
             
-            # Пробуем загрузить из кэша
-            cache_file = f"data/{symbol}_1h_cache.csv"
+            # Очищаем старые кеш файлы для данного символа
+            self.clear_old_cache_files(symbol)
+            
+            # Пробуем загрузить из кэша (учитываем период для имени файла)
+            cache_days = self.config.test_period_days + 50  # Убираем минимум 120 дней
+            cache_file = f"data/{symbol}_1h_cache_{cache_days}d.csv"
+            
+            logger.info(f"🔍 Ищем кеш файл: {cache_file} (период: {self.config.test_period_days} дней + 50 буферных = {cache_days} дней)")
             if os.path.exists(cache_file):
                 df = pd.read_csv(cache_file)
                 df['timestamp'] = pd.to_datetime(df['timestamp'])
@@ -1588,7 +1743,8 @@ class RealWinrateTester:
                     if len(df) > hours_needed:
                         df = df.tail(hours_needed)
                     
-                    logger.info(f"✅ Загружено {len(df)} записей для {symbol} (период: {df.index[0]} - {df.index[-1]})")
+                    logger.info(f"✅ Загружено {len(df)} записей для {symbol} из кеша (период: {df.index[0]} - {df.index[-1]})")
+                    logger.info(f"📊 ИТОГО: Используем {len(df)} записей за {self.config.test_period_days} дней для тестирования")
                     return df
                 else:
                     logger.warning(f"⚠️ Кэш файл {cache_file} пустой")
@@ -1600,10 +1756,11 @@ class RealWinrateTester:
                 try:
                     async with self.data_collector as collector:
                         # Загружаем данные за больший период для создания кэша
+                        # Увеличиваем буфер для обеспечения достаточного количества данных
                         data = await collector.get_historical_data(
                             symbol=symbol, 
                             interval="1h", 
-                            days=self.config.test_period_days + 30  # Дополнительные дни для буфера
+                            days=cache_days
                         )
                         
                         if not data.empty:
@@ -1623,7 +1780,8 @@ class RealWinrateTester:
                                 if len(data) > hours_needed:
                                     data = data.tail(hours_needed)
                             
-                            logger.info(f"✅ Загружено {len(data)} записей для {symbol} с Binance")
+                            logger.info(f"✅ Загружено {len(data)} записей для {symbol} с Binance (период: {data.index[0]} - {data.index[-1]})")
+                            logger.info(f"📊 ИТОГО: Используем {len(data)} записей за {self.config.test_period_days} дней для тестирования")
                             return data
                         else:
                             logger.error(f"❌ Не удалось загрузить данные для {symbol} с Binance")
@@ -3848,6 +4006,7 @@ class RealWinrateTester:
             result = self.calculate_metrics(symbol, trades)
             
             logger.info(f"✅ {symbol}: {result.total_trades} сделок, винрейт {result.win_rate:.1f}%")
+            
             return result
             
         except Exception as e:
@@ -3883,10 +4042,20 @@ class RealWinrateTester:
                 logger.info("📊 Генерация детальных графических отчетов...")
                 self._generate_detailed_visualizations(results)
             
+            # Очистка всех кешей после завершения полного тестирования
+            if self.config.clear_cache_after_test:
+                logger.info("🧹 Очистка кешей после завершения тестирования...")
+                self.clear_all_caches()
+                logger.info("✅ Кеши успешно очищены")
+            
             return results
             
         except Exception as e:
             logger.error(f"❌ Ошибка полного тестирования: {e}")
+            # Очистка кешей даже в случае ошибки
+            if self.config.clear_cache_after_test:
+                logger.info("🧹 Очистка кешей после ошибки...")
+                self.clear_all_caches()
             return {}
     
     def generate_report(self, results: Dict[str, WinrateTestResult]) -> str:
@@ -4757,13 +4926,66 @@ class RealWinrateTester:
         except Exception as e:
             logger.error(f"❌ Ошибка при создании графических отчетов: {e}")
 
+def parse_arguments():
+    """Parse command line arguments for automated strategy testing"""
+    parser = argparse.ArgumentParser(description='Automated trading strategy testing')
+    
+    # Main strategy parameters
+    parser.add_argument('--strategy-name', type=str, default='default', help='Strategy name')
+    parser.add_argument('--test-days', type=int, default=7, help='Number of days to test')
+    parser.add_argument('--results-file', type=str, help='Path to save results file')
+    
+    # Position and risk parameters
+    parser.add_argument('--position-size', type=float, default=0.10, help='Position size (percent of balance)')
+    parser.add_argument('--leverage', type=float, default=10.0, help='Leverage multiplier')
+    parser.add_argument('--take-profit', type=float, default=0.060, help='Take profit percentage')
+    parser.add_argument('--stop-loss', type=float, default=0.015, help='Stop loss percentage')
+    
+    # Additional strategy parameters
+    parser.add_argument('--min-confidence', type=float, help='Minimum confidence threshold')
+    parser.add_argument('--min-volatility', type=float, help='Minimum volatility threshold')
+    parser.add_argument('--min-volume-ratio', type=float, help='Minimum volume ratio')
+    parser.add_argument('--max-hold-hours', type=int, help='Maximum holding time in hours')
+    parser.add_argument('--use-trailing-stop', type=bool, help='Use trailing stop')
+    parser.add_argument('--use-take-profit-grid', type=bool, help='Use take profit grid')
+    
+    return parser.parse_args()
+
 async def main():
     """Основная функция для тестирования в реальных рыночных условиях"""
     try:
-        # Конфигурация тестирования с ЗОЛОТОЙ ПЯТЕРКОЙ - топ прибыльными парами
-        config = TestConfig(
-            symbols=['TAOUSDT', 'CRVUSDT', 'ZRXUSDT', 'APTUSDT', 'SANDUSDT']  # 🏆 Топ-5 пар по результатам 30-дневного тестирования 50 пар
-        )
+        # Парсинг аргументов командной строки
+        args = parse_arguments()
+        
+        # Создание базовой конфигурации из TestConfig
+        base_config = TestConfig()
+        
+        # Создание конфигурации с учетом переданных параметров
+        # Приоритет: аргументы командной строки переопределяют только если они отличаются от дефолтных значений
+        config_params = {
+            'symbols': ['ZRXUSDT', 'SANDUSDT', 'TAOUSDT'],  # 🏆 СУПЕР-ОПТИМИЗИРОВАННЫЙ СПИСОК
+            'test_period_days': args.test_days if args.test_days != 7 else base_config.test_period_days,  # Используем TestConfig если не переопределено
+            'position_size_percent': args.position_size if args.position_size != 0.10 else base_config.position_size_percent,
+            'leverage_multiplier': args.leverage if args.leverage != 10.0 else base_config.leverage_multiplier,
+            'take_profit_percent': args.take_profit if args.take_profit != 0.06 else base_config.take_profit_percent,
+            'stop_loss_percent': args.stop_loss if args.stop_loss != 0.015 else base_config.stop_loss_percent
+        }
+        
+        # Добавляем дополнительные параметры, если они переданы и отличаются от значений в TestConfig
+        if args.min_confidence is not None and args.min_confidence != base_config.min_confidence:
+            config_params['min_confidence'] = args.min_confidence
+        if args.min_volatility is not None and args.min_volatility != base_config.min_volatility:
+            config_params['min_volatility'] = args.min_volatility
+        if args.min_volume_ratio is not None and args.min_volume_ratio != base_config.min_volume_ratio:
+            config_params['min_volume_ratio'] = args.min_volume_ratio
+        if args.max_hold_hours is not None and args.max_hold_hours != base_config.max_hold_hours:
+            config_params['max_hold_hours'] = args.max_hold_hours
+        if args.use_trailing_stop is not None and args.use_trailing_stop != base_config.use_trailing_stop:
+            config_params['use_trailing_stop'] = args.use_trailing_stop
+        if args.use_take_profit_grid is not None and args.use_take_profit_grid != base_config.use_take_profit_grid:
+            config_params['use_take_profit_grid'] = args.use_take_profit_grid
+        
+        config = TestConfig(**config_params)
         
         # Создаем тестер
         tester = RealWinrateTester(config)
@@ -4783,17 +5005,43 @@ async def main():
         os.makedirs("reports/winrate_data", exist_ok=True)
         
         # Пути для сохранения файлов
-        report_file = f"reports/winrate_tests/real_winrate_test_{timestamp}.txt"
-        data_file = f"reports/winrate_data/real_winrate_data_{timestamp}.json"
+        if args.results_file:
+            # Используем переданный путь для результатов
+            data_file = args.results_file
+            # Создаем папку для файла результатов, если она не существует
+            os.makedirs(os.path.dirname(data_file), exist_ok=True)
+            # Создаем отчет рядом с файлом результатов
+            report_file = data_file.replace('.json', '.txt')
+        else:
+            # Используем стандартные пути
+            report_file = f"reports/winrate_tests/real_winrate_test_{timestamp}.txt"
+            data_file = f"reports/winrate_data/real_winrate_data_{timestamp}.json"
         
         # Сохраняем отчет
         with open(report_file, "w", encoding="utf-8") as f:
             f.write(report)
         
         # Сохраняем детальные данные
-        detailed_data = {}
+        detailed_data = {
+            'strategy_name': args.strategy_name,
+            'test_config': {
+                'test_period_days': config.test_period_days,
+                'position_size_percent': config.position_size_percent,
+                'leverage_multiplier': config.leverage_multiplier,
+                'take_profit_percent': config.take_profit_percent,
+                'stop_loss_percent': config.stop_loss_percent,
+                'min_confidence': config.min_confidence,
+                'min_volatility': config.min_volatility,
+                'min_volume_ratio': config.min_volume_ratio,
+                'max_hold_hours': config.max_hold_hours,
+                'use_trailing_stop': config.use_trailing_stop,
+                'use_take_profit_grid': config.use_take_profit_grid
+            },
+            'results': {}
+        }
+        
         for symbol, result in results.items():
-            detailed_data[symbol] = {
+            detailed_data['results'][symbol] = {
                 'total_trades': result.total_trades,
                 'winning_trades': result.winning_trades,
                 'losing_trades': result.losing_trades,
