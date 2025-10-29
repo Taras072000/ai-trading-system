@@ -17,7 +17,8 @@ from dataclasses import dataclass
 import config
 from utils.timezone_utils import get_utc_now
 from config_params import CONFIG_PARAMS
-from sklearn.model_selection import train_test_split
+from utils.indicators_cache import indicators_cache
+from sklearn.model_selection import train_test_split, TimeSeriesSplit, cross_val_score
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, mean_squared_error
 
@@ -106,14 +107,14 @@ class LGBMAI:
         self.feature_cache = {}
         self.last_cleanup = get_utc_now()
         
-        # Параметры LGBM для экономии ресурсов
+        # Оптимизированные параметры LGBM для лучшего качества
         self.lgbm_params = {
             'objective': 'regression',
             'metric': 'rmse',
             'boosting_type': 'gbdt',
-            'num_leaves': lgbm_config.get('num_leaves', 31),
-            'max_depth': lgbm_config.get('max_depth', 6),
-            'learning_rate': 0.1,
+            'num_leaves': lgbm_config.get('num_leaves', 15),  # Оптимизировано с 31 до 15
+            'max_depth': lgbm_config.get('max_depth', 4),     # Оптимизировано с 6 до 4
+            'learning_rate': lgbm_config.get('learning_rate', 0.05),  # Оптимизировано с 0.1 до 0.05
             'n_estimators': lgbm_config.get('n_estimators', 100),
             'subsample': 0.8,
             'colsample_bytree': 0.8,
@@ -173,21 +174,16 @@ class LGBMAI:
     async def train_model(self, model_name: str, X: pd.DataFrame, y: pd.Series, 
                          model_type: str = 'regression') -> Dict[str, Any]:
         """
-        Обучение модели с оптимизацией ресурсов
+        Обучение модели с кросс-валидацией TimeSeriesSplit
         """
         if not self.is_initialized:
             await self.initialize()
         
         try:
-            logger.info(f"Обучение модели {model_name}...")
+            logger.info(f"Обучение модели {model_name} с кросс-валидацией...")
             
             # Подготовка данных
             X_processed, scaler = await self._prepare_features(X)
-            
-            # Разделение данных
-            X_train, X_test, y_train, y_test = train_test_split(
-                X_processed, y, test_size=0.2, random_state=42
-            )
             
             # Настройка параметров в зависимости от типа задачи
             params = self.lgbm_params.copy()
@@ -195,25 +191,42 @@ class LGBMAI:
                 params['objective'] = 'binary'
                 params['metric'] = 'binary_logloss'
                 model = lgb.LGBMClassifier(**params)
+                scoring = 'accuracy'
             else:
                 model = lgb.LGBMRegressor(**params)
+                scoring = 'neg_mean_squared_error'
             
-            # Обучение с ранней остановкой для экономии ресурсов
+            # Кросс-валидация с TimeSeriesSplit (5 фолдов)
+            tscv = TimeSeriesSplit(n_splits=5)
+            cv_scores = cross_val_score(model, X_processed, y, cv=tscv, scoring=scoring, n_jobs=1)
+            
+            # Финальное обучение на всех данных
+            # Разделение данных для финального обучения
+            X_train, X_test, y_train, y_test = train_test_split(
+                X_processed, y, test_size=0.2, random_state=42, shuffle=False  # Без перемешивания для временных рядов
+            )
+            
+            # Обучение с ранней остановкой
             model.fit(
                 X_train, y_train,
                 eval_set=[(X_test, y_test)],
                 callbacks=[lgb.early_stopping(10), lgb.log_evaluation(0)]
             )
             
-            # Оценка качества
+            # Оценка качества на тестовых данных
             if model_type == 'classification':
                 y_pred = model.predict(X_test)
-                score = accuracy_score(y_test, y_pred)
+                test_score = accuracy_score(y_test, y_pred)
                 metric_name = 'accuracy'
+                cv_mean = cv_scores.mean()
+                cv_std = cv_scores.std()
             else:
                 y_pred = model.predict(X_test)
-                score = mean_squared_error(y_test, y_pred, squared=False)
+                test_score = mean_squared_error(y_test, y_pred, squared=False)
                 metric_name = 'rmse'
+                # Для MSE нужно инвертировать отрицательные значения
+                cv_mean = np.sqrt(-cv_scores.mean())
+                cv_std = np.sqrt(cv_scores.std())
             
             # Сохраняем модель
             self.model_manager.add_model(model_name, model, scaler)
@@ -221,14 +234,24 @@ class LGBMAI:
             # Периодическая очистка памяти
             await self._periodic_cleanup()
             
+            logger.info(f"Модель {model_name} обучена. CV Score: {cv_mean:.4f} ± {cv_std:.4f}, Test Score: {test_score:.4f}")
+            
             return {
                 'model_name': model_name,
                 'model_type': model_type,
-                'score': score,
+                'test_score': test_score,
+                'cv_score_mean': cv_mean,
+                'cv_score_std': cv_std,
+                'cv_scores': cv_scores.tolist(),
                 'metric': metric_name,
                 'feature_importance': dict(zip(X.columns, model.feature_importances_)),
                 'training_samples': len(X_train),
-                'test_samples': len(X_test)
+                'test_samples': len(X_test),
+                'cross_validation': {
+                    'method': 'TimeSeriesSplit',
+                    'n_splits': 5,
+                    'scores': cv_scores.tolist()
+                }
             }
             
         except Exception as e:
@@ -336,23 +359,34 @@ class LGBMAI:
             features = pd.DataFrame(index=price_data.index)
             
             # Создаем ровно 5 признаков для совместимости с обученной моделью
-            # 1. Нормализованная цена
-            features['price_norm'] = (price_data['close'] - price_data['close'].rolling(20).mean()) / price_data['close'].rolling(20).std()
+            # 1. Нормализованная цена (используем кэш для SMA)
+            sma_20 = indicators_cache.get_sma(price_data['close'], 20)
+            if sma_20 is not None:
+                sma_20_std = price_data['close'].rolling(20).std()
+                features['price_norm'] = (price_data['close'] - sma_20) / sma_20_std
+            else:
+                features['price_norm'] = 0.0
             
-            # 2. RSI
-            delta = price_data['close'].diff()
-            gain = (delta.where(delta > 0, 0)).rolling(14).mean()
-            loss = (-delta.where(delta < 0, 0)).rolling(14).mean()
-            rs = gain / loss
-            features['rsi'] = (100 - (100 / (1 + rs))) / 100.0  # Нормализуем к [0,1]
+            # 2. RSI (используем кэш)
+            rsi = indicators_cache.get_rsi(price_data['close'], 14)
+            if rsi is not None:
+                features['rsi'] = rsi / 100.0  # Нормализуем к [0,1]
+            else:
+                features['rsi'] = 0.5  # Нейтральное значение
             
-            # 3. Отношение SMA
-            sma_5 = price_data['close'].rolling(5).mean()
-            sma_20 = price_data['close'].rolling(20).mean()
-            features['sma_ratio'] = sma_5 / sma_20 - 1.0  # Центрируем вокруг 0
+            # 3. Отношение SMA (используем кэш)
+            sma_5 = indicators_cache.get_sma(price_data['close'], 5)
+            if sma_5 is not None and sma_20 is not None:
+                features['sma_ratio'] = sma_5 / sma_20 - 1.0  # Центрируем вокруг 0
+            else:
+                features['sma_ratio'] = 0.0
             
-            # 4. Волатильность
-            features['volatility'] = price_data['close'].pct_change().rolling(10).std()
+            # 4. Волатильность (используем кэш)
+            volatility = indicators_cache.get_volatility(price_data['close'], 10)
+            if volatility is not None:
+                features['volatility'] = volatility
+            else:
+                features['volatility'] = 0.0
             
             # 5. Ценовое изменение
             features['price_change'] = price_data['close'].pct_change()

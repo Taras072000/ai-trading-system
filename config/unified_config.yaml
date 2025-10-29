@@ -1,0 +1,425 @@
+# Единая конфигурация для Peper Binance v4 Trading System
+# Архитектурные улучшения - Фаза 2
+
+# ============================================================================
+# СИСТЕМНЫЕ НАСТРОЙКИ
+# ============================================================================
+system:
+  version: "4.0.0"
+  environment: "production"
+  debug_mode: false
+  log_level: "INFO"
+  
+  # Производительность
+  performance:
+    max_workers: 4
+    memory_limit_mb: 2048
+    cpu_usage_limit: 0.8
+    max_concurrent_trades: 10
+    api_request_timeout: 30
+    data_update_interval: 1
+
+  # Мониторинг ресурсов
+  monitoring:
+    check_interval: 30
+    memory_threshold: 0.85
+    cpu_threshold: 0.90
+    auto_cleanup: true
+
+# ============================================================================
+# AI МОДУЛИ - УНИФИЦИРОВАННАЯ КОНФИГУРАЦИЯ
+# ============================================================================
+ai_modules:
+  # Глобальные настройки для всех AI модулей
+  global:
+    enabled: true
+    timeout: 30
+    max_retries: 3
+    memory_optimization: true
+    cache_enabled: true
+    
+  # Веса модулей (адаптивные)
+  weights:
+    trading_ai: 0.25
+    lava_ai: 0.30
+    lgbm_ai: 0.35
+    mistral_ai: 0.10
+    
+  # Ограничения весов
+  weight_constraints:
+    trading_ai:
+      min: 0.15
+      max: 0.40
+    lava_ai:
+      min: 0.20
+      max: 0.45
+    lgbm_ai:
+      min: 0.25
+      max: 0.50
+    mistral_ai:
+      min: 0.05
+      max: 0.25
+
+  # Trading AI - Оптимизированные параметры
+  trading_ai:
+    enabled: true
+    priority: "high"
+    memory_limit_mb: 512
+    
+    # RSI параметры (оптимизированные)
+    rsi:
+      period: 14
+      buy_threshold: 65    # Снижено с 75
+      sell_threshold: 35   # Повышено с 25
+      
+    # Confidence параметры
+    confidence:
+      multiplier: 10       # Снижено с 20
+      min_confidence: 0.25 # Снижено с 0.3
+      
+    # SMA параметры
+    sma:
+      fast_period: 5
+      slow_period: 20
+      
+    # Кэширование
+    cache:
+      enabled: true
+      max_size: 100
+      ttl: 300
+
+  # Lava AI
+  lava_ai:
+    enabled: true
+    priority: "medium"
+    memory_limit_mb: 512
+    
+    # Параметры анализа
+    analysis:
+      lookback_period: 50
+      volatility_window: 20
+      trend_threshold: 0.02
+      
+    # Confidence параметры
+    confidence:
+      base_confidence: 0.6
+      volatility_adjustment: true
+      trend_boost: 0.1
+
+  # LGBM AI - Улучшенные параметры
+  lgbm_ai:
+    enabled: true
+    priority: "high"
+    memory_limit_mb: 1024
+    
+    # Модель параметры (оптимизированные)
+    model:
+      num_leaves: 15        # Снижено с 31
+      max_depth: 4          # Снижено с 6
+      learning_rate: 0.05   # Снижено с 0.1
+      n_estimators: 200
+      subsample: 0.7
+      colsample_bytree: 0.7
+      
+    # Кросс-валидация
+    cross_validation:
+      enabled: true
+      n_splits: 5
+      test_size: 0.2
+      shuffle: false  # TimeSeriesSplit
+      
+    # Переобучение
+    retraining:
+      interval_days: 7
+      min_samples: 1000
+      performance_threshold: 0.6
+
+  # Mistral AI
+  mistral_ai:
+    enabled: true
+    priority: "low"
+    memory_limit_mb: 4096
+    fallback_mode: true
+    min_ram_gb: 8.0
+    
+    # Сервер настройки
+    server:
+      auto_start: true
+      auto_stop: true
+      model_name: "mistral:latest"
+      host: "localhost"
+      port: 11434
+      timeout: 30
+      max_retries: 3
+      startup_timeout: 120
+
+# ============================================================================
+# КООРДИНАЦИЯ AI МОДУЛЕЙ
+# ============================================================================
+ai_coordination:
+  # Алгоритм взвешивания
+  weighting_algorithm: "adaptive_performance"
+  
+  # Адаптивные веса
+  adaptive_weights:
+    enabled: true
+    learning_rate: 0.01
+    performance_window: 100  # Количество сделок для оценки
+    min_trades_for_adaptation: 20
+    
+  # Конфликт-резолюция
+  conflict_resolution:
+    enabled: true
+    threshold: 0.3  # Порог различия в сигналах
+    strategy: "weighted_average"  # weighted_average, majority_vote, confidence_based
+    
+  # Консенсус
+  consensus:
+    min_agreement: 0.6  # Минимальное согласие для сигнала
+    confidence_boost: 0.1  # Бонус к уверенности при консенсусе
+
+# ============================================================================
+# ОПРЕДЕЛЕНИЕ ФАЗ РЫНКА
+# ============================================================================
+market_phases:
+  # Включение системы
+  enabled: true
+  
+  # Параметры определения фаз
+  detection:
+    volatility_window: 20
+    trend_window: 50
+    volume_window: 20
+    
+  # Пороги для фаз
+  thresholds:
+    high_volatility: 0.03
+    low_volatility: 0.01
+    strong_trend: 0.02
+    weak_trend: 0.005
+    
+  # Адаптивные параметры по фазам
+  phase_parameters:
+    uptrend:
+      ai_weights:
+        trading_ai: 0.30
+        lava_ai: 0.35
+        lgbm_ai: 0.30
+        mistral_ai: 0.05
+      risk_multiplier: 1.2
+      
+    downtrend:
+      ai_weights:
+        trading_ai: 0.20
+        lava_ai: 0.25
+        lgbm_ai: 0.45
+        mistral_ai: 0.10
+      risk_multiplier: 0.8
+      
+    sideways:
+      ai_weights:
+        trading_ai: 0.25
+        lava_ai: 0.30
+        lgbm_ai: 0.35
+        mistral_ai: 0.10
+      risk_multiplier: 0.6
+      
+    high_volatility:
+      ai_weights:
+        trading_ai: 0.15
+        lava_ai: 0.20
+        lgbm_ai: 0.50
+        mistral_ai: 0.15
+      risk_multiplier: 0.5
+      
+    low_volatility:
+      ai_weights:
+        trading_ai: 0.35
+        lava_ai: 0.35
+        lgbm_ai: 0.25
+        mistral_ai: 0.05
+      risk_multiplier: 1.5
+
+# ============================================================================
+# ПРОДВИНУТЫЙ РИСК-МЕНЕДЖМЕНТ
+# ============================================================================
+risk_management:
+  # Динамическое позиционирование
+  dynamic_positioning:
+    enabled: true
+    base_position_size: 0.02  # 2% от капитала
+    max_position_size: 0.05   # 5% от капитала
+    volatility_adjustment: true
+    correlation_adjustment: true
+    
+  # ATR-based Stop Loss
+  stop_loss:
+    enabled: true
+    atr_multiplier: 2.5
+    max_loss_percent: 1.5
+    trailing_enabled: true
+    trailing_atr_multiplier: 1.5
+    
+  # Take Profit
+  take_profit:
+    enabled: true
+    risk_reward_ratio: 2.0
+    dynamic_targets: true
+    partial_profit_levels: [0.5, 0.75]  # Частичная фиксация прибыли
+    
+  # Лимиты
+  limits:
+    daily_loss_limit: 0.03    # 3% от капитала в день
+    weekly_loss_limit: 0.10   # 10% от капитала в неделю
+    max_open_positions: 5
+    max_correlation: 0.7      # Максимальная корреляция между позициями
+    
+  # Корреляционный анализ
+  correlation_analysis:
+    enabled: true
+    window: 30
+    threshold: 0.7
+    symbols: ["BTCUSDT", "ETHUSDT", "BNBUSDT", "ADAUSDT", "SOLUSDT"]
+
+# ============================================================================
+# ОПТИМИЗАЦИЯ ПРОИЗВОДИТЕЛЬНОСТИ
+# ============================================================================
+performance_optimization:
+  # Асинхронная обработка
+  async_processing:
+    enabled: true
+    max_concurrent_tasks: 10
+    task_timeout: 30
+    
+  # Кэширование
+  caching:
+    enabled: true
+    
+    # Индикаторы
+    indicators:
+      enabled: true
+      max_size: 1000
+      ttl: 300
+      cleanup_interval: 60
+      
+    # Данные
+    market_data:
+      enabled: true
+      max_size: 500
+      ttl: 60
+      
+    # Модели
+    models:
+      enabled: true
+      max_size: 50
+      ttl: 3600
+      
+  # Оптимизация алгоритмов
+  algorithms:
+    vectorization: true
+    parallel_processing: true
+    memory_mapping: true
+    lazy_loading: true
+
+# ============================================================================
+# МОНИТОРИНГ И АНАЛИТИКА
+# ============================================================================
+monitoring:
+  # Метрики производительности
+  performance_metrics:
+    enabled: true
+    calculation_interval: 300  # 5 минут
+    
+    # Целевые метрики
+    targets:
+      win_rate: 0.65
+      roi: 0.05
+      max_drawdown: 0.06
+      profit_factor: 1.5
+      sharpe_ratio: 1.0
+      
+  # Алерты
+  alerts:
+    enabled: true
+    
+    # Пороги для алертов
+    thresholds:
+      low_win_rate: 0.50
+      high_drawdown: 0.08
+      low_roi: -0.02
+      system_error: true
+      
+  # Отчетность
+  reporting:
+    enabled: true
+    auto_generate: true
+    frequency: "daily"
+    formats: ["json", "html"]
+    
+# ============================================================================
+# ТЕСТИРОВАНИЕ И ВАЛИДАЦИЯ
+# ============================================================================
+testing:
+  # Бэктестинг
+  backtesting:
+    enabled: true
+    default_period_days: 30
+    walk_forward: true
+    cross_validation: true
+    
+  # Стресс-тестирование
+  stress_testing:
+    enabled: true
+    scenarios: ["high_volatility", "market_crash", "low_liquidity"]
+    
+  # Валидация
+  validation:
+    enabled: true
+    min_trades_for_validation: 50
+    confidence_threshold: 0.95
+
+# ============================================================================
+# БАЗА ДАННЫХ И ПЕРСИСТЕНТНОСТЬ
+# ============================================================================
+database:
+  type: "sqlite"
+  path: "data/trading_system.db"
+  backup_enabled: true
+  backup_interval: 3600
+  max_connections: 10
+  
+  # Оптимизация
+  optimization:
+    pragma_settings:
+      journal_mode: "WAL"
+      synchronous: "NORMAL"
+      cache_size: 10000
+      temp_store: "MEMORY"
+
+# ============================================================================
+# ЛОГИРОВАНИЕ
+# ============================================================================
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  
+  # Файлы логов
+  files:
+    main: "logs/trading_system.log"
+    ai_modules: "logs/ai_modules.log"
+    performance: "logs/performance.log"
+    errors: "logs/errors.log"
+    
+  # Ротация логов
+  rotation:
+    max_file_size: "10MB"
+    backup_count: 5
+    
+  # Уровни по модулям
+  module_levels:
+    trading_ai: "INFO"
+    lava_ai: "INFO"
+    lgbm_ai: "DEBUG"
+    mistral_ai: "WARNING"
+    risk_management: "INFO"
+    performance: "DEBUG"

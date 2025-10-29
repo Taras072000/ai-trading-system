@@ -1,0 +1,49 @@
+{
+  "timestamp": "2025-10-28T19:21:52.185902",
+  "stats": {
+    "files_deleted": 0,
+    "dirs_deleted": 0,
+    "space_freed": 0,
+    "backup_created": false
+  },
+  "space_freed_mb": 0.0,
+  "essential_files_preserved": [
+    "ai_modules/__init__.py",
+    "database/persistence_manager.py",
+    "requirements.txt",
+    "database/__init__.py",
+    "config/config_manager.py",
+    "ai_modules/lava_ai.py",
+    "ai_modules/multi_ai_orchestrator.py",
+    "utils/__init__.py",
+    "ai_modules/ai_manager.py",
+    "config/reinforcement_learning_profiles.json",
+    "config/reinforcement_learning_config.json",
+    ".gitignore",
+    "config.py",
+    "config/__init__.py",
+    "data_collector.py",
+    "ai_modules/mistral_server_manager.py",
+    "database/reinforcement_learning_db.py",
+    "analytics/reinforcement_learning_analytics.py",
+    "ai_modules/lgbm_ai.py",
+    "main.py",
+    "utils/timezone_utils.py",
+    "detailed_trade_visualizer.py",
+    "ai_modules/reinforcement_learning_engine.py",
+    ".gitattributes",
+    "historical_data_manager.py",
+    "winrate_test_with_results2.py",
+    "ai_modules/trading_ai.py",
+    "ai_modules/mistral_ai.py"
+  ],
+  "essential_dirs_preserved": [
+    "models",
+    "database",
+    "analytics",
+    "utils",
+    ".trae",
+    "config",
+    "ai_modules"
+  ]
+}

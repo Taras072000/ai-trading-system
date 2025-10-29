@@ -460,6 +460,31 @@ class AIManager:
             except Exception as e:
                 logger.error(f"Ошибка предварительной загрузки {module_type.value}: {e}")
     
+    def clear_cache(self):
+        """Очистка кешей всех загруженных AI модулей"""
+        try:
+            cleared_modules = []
+            
+            # Очищаем кеши всех загруженных модулей
+            for module_type, module in self.modules.items():
+                if hasattr(module, 'clear_all_cache'):
+                    module.clear_all_cache()
+                    cleared_modules.append(module_type.value)
+                elif hasattr(module, 'clear_cache'):
+                    module.clear_cache()
+                    cleared_modules.append(module_type.value)
+            
+            # Принудительная сборка мусора
+            gc.collect()
+            
+            if cleared_modules:
+                logger.info(f"AIManager: Кеши очищены для модулей: {', '.join(cleared_modules)}")
+            else:
+                logger.info("AIManager: Нет загруженных модулей для очистки кеша")
+                
+        except Exception as e:
+            logger.error(f"Ошибка очистки кешей в AIManager: {e}")
+
     async def shutdown(self):
         """Корректное завершение работы менеджера"""
         logger.info("Завершение работы AI Manager...")

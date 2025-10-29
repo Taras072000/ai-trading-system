@@ -111,11 +111,11 @@ CONFIG_PARAMS = {
         }
     },
     
-    # Настройки безопасности
+    # Настройки безопасности (оптимизированные параметры)
     'security': {
-        'max_position_size': 0.1,  # 10% от депозита
-        'stop_loss_percent': 2.0,
-        'daily_loss_limit': 5.0
+        'max_position_size': 0.05,  # 5% от депозита (оптимизировано)
+        'stop_loss_percent': 2.5,   # ATR-based stop-loss
+        'daily_loss_limit': 3.0     # Дневной лимит убытков: 3% (оптимизировано)
     },
     
     # Настройки логирования

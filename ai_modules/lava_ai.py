@@ -1298,6 +1298,23 @@ class LavaAI:
         self.is_initialized = False
         logger.info("Lava AI ресурсы очищены")
     
+    def clear_all_cache(self):
+        """Полная очистка всех кешей LavaAI"""
+        try:
+            # Очистка кеша анализа
+            self.memory_manager.analysis_cache.clear()
+            
+            # Очистка кеша паттернов
+            self.memory_manager.pattern_cache.clear()
+            
+            # Принудительная сборка мусора
+            gc.collect()
+            
+            logger.info("LavaAI: Все кеши очищены")
+            
+        except Exception as e:
+            logger.error(f"Ошибка очистки кешей LavaAI: {e}")
+    
     def get_memory_usage(self) -> Dict[str, Any]:
         """Получение информации об использовании памяти"""
         import psutil

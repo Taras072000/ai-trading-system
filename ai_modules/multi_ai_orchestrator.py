@@ -16,6 +16,7 @@ from datetime import datetime, time
 import json
 from dataclasses import dataclass, asdict
 from utils.timezone_utils import get_utc_now
+from utils.indicators_cache import indicators_cache
 
 # Импорты реальных AI модулей
 from .lava_ai import LavaAI
@@ -106,7 +107,7 @@ class MultiAIOrchestrator:
                 'limit_commission': 0.001,
                 'dynamic_risk_enabled': True,
                 'volatility_multiplier': 0.3,  # Экстремально снижен
-                'min_confidence_threshold': 0.15  # Очень низкий порог для активной торговли
+                'min_confidence_threshold': 0.25  # Оптимизированный порог для качественных сигналов
             },
             'ETHUSDT': {
                 'enabled': True,
@@ -122,7 +123,7 @@ class MultiAIOrchestrator:
                 'limit_commission': 0.001,
                 'dynamic_risk_enabled': True,
                 'volatility_multiplier': 0.3,  # Экстремально снижен
-                'min_confidence_threshold': 0.15,  # Очень низкий порог для активной торговли
+                'min_confidence_threshold': 0.25,  # Оптимизированный порог для качественных сигналов
                 'max_daily_trades': 5
             },
             'BNBUSDT': {
@@ -138,7 +139,7 @@ class MultiAIOrchestrator:
                 'limit_commission': 0.001,
                 'dynamic_risk_enabled': True,
                 'volatility_multiplier': 0.3,  # Экстремально снижен
-                'min_confidence_threshold': 0.15  # Очень низкий порог для активной торговли
+                'min_confidence_threshold': 0.25  # Оптимизированный порог для качественных сигналов
             },
             'ADAUSDT': {
                 'volatility_threshold': 0.2,  # Экстремально снижен
@@ -153,7 +154,7 @@ class MultiAIOrchestrator:
                 'limit_commission': 0.001,
                 'dynamic_risk_enabled': True,
                 'volatility_multiplier': 0.3,  # Экстремально снижен
-                'min_confidence_threshold': 0.15  # Очень низкий порог для активной торговли
+                'min_confidence_threshold': 0.25  # Оптимизированный порог для качественных сигналов
             },
             'SOLUSDT': {
                 'volatility_threshold': 0.2,  # Экстремально низкий для генерации сделок
@@ -168,7 +169,7 @@ class MultiAIOrchestrator:
                 'limit_commission': 0.001,
                 'dynamic_risk_enabled': True,
                 'volatility_multiplier': 0.2,  # Экстремально низкий
-                'min_confidence_threshold': 0.15  # Очень низкий порог для активной торговли
+                'min_confidence_threshold': 0.25  # Оптимизированный порог для качественных сигналов
             },
             'default': {
                 'volatility_threshold': 0.5,
@@ -725,17 +726,20 @@ class MultiAIOrchestrator:
                     'movement_24h_threshold': 0.1 # Снижено с 0.5 до 0.1
                 }
             
-            # Расчет ATR (Average True Range) за последние 14 периодов
-            high = data['high'].tail(14)
-            low = data['low'].tail(14)
-            close = data['close'].tail(15)
-            
-            tr1 = high - low
-            tr2 = abs(high - close.shift(1).tail(14))
-            tr3 = abs(low - close.shift(1).tail(14))
-            
-            true_range = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
-            atr = true_range.mean()
+            # Расчет ATR (Average True Range) за последние 14 периодов через кэш
+            atr = indicators_cache.get_atr(data, 14)
+            if atr is None:
+                # Fallback расчет если кэш недоступен
+                high = data['high'].tail(14)
+                low = data['low'].tail(14)
+                close = data['close'].tail(15)
+                
+                tr1 = high - low
+                tr2 = abs(high - close.shift(1).tail(14))
+                tr3 = abs(low - close.shift(1).tail(14))
+                
+                true_range = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+                atr = true_range.mean()
             
             # Текущая цена
             current_price = data['close'].iloc[-1]
@@ -963,12 +967,15 @@ class MultiAIOrchestrator:
     def _calculate_solusdt_risk_params(self, data: pd.DataFrame, signal_type: str, confidence: float) -> Dict[str, float]:
         """Специальный расчет параметров риска для SOLUSDT"""
         try:
-            # Анализ ATR для динамического стоп-лосса
-            high_low = data['high'] - data['low']
-            high_close = abs(data['high'] - data['close'].shift())
-            low_close = abs(data['low'] - data['close'].shift())
-            true_range = pd.concat([high_low, high_close, low_close], axis=1).max(axis=1)
-            atr = true_range.rolling(window=14).mean().iloc[-1]
+            # Анализ ATR для динамического стоп-лосса через кэш
+            atr = indicators_cache.get_atr(data, 14)
+            if atr is None:
+                # Fallback расчет если кэш недоступен
+                high_low = data['high'] - data['low']
+                high_close = abs(data['high'] - data['close'].shift())
+                low_close = abs(data['low'] - data['close'].shift())
+                true_range = pd.concat([high_low, high_close, low_close], axis=1).max(axis=1)
+                atr = true_range.rolling(window=14).mean().iloc[-1]
             
             current_price = data['close'].iloc[-1]
             atr_percent = (atr / current_price) * 100
@@ -1041,8 +1048,8 @@ class MultiAIOrchestrator:
             # Получение конфигурации для актива
             config = self.asset_configs.get(symbol, self.asset_configs['default'])
             
-            # Проверка минимального порога уверенности для проблемных активов (снижен для более активной торговли)
-            min_confidence = config.get('min_confidence_threshold', 0.35)  # Снижен с 0.6 до 0.35
+            # Проверка минимального порога уверенности для проблемных активов (оптимизирован)
+            min_confidence = config.get('min_confidence_threshold', 0.25)  # Оптимизирован до 0.25
             if confidence < min_confidence:
                 return self._create_safe_decision(
                     f"❌ Сигнал отклонен для {symbol}: уверенность {confidence:.1%} < минимального порога {min_confidence:.1%}"

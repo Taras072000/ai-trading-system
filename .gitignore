@@ -135,3 +135,41 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Cleanup patterns (added after project cleanup)
+# Test files
+test_*.py
+*_test.py
+*test*.log
+
+# Debug files
+debug_*.py
+debug_output*.txt
+debug_*.log
+
+# Mock and demo files
+mock_*.py
+simple_*.py
+demo_*.py
+example_*.py
+
+# Temporary analysis files
+analyze_*.py
+*_analysis_*.txt
+*_analysis_*.json
+*_analysis_*.csv
+
+# Dated configuration files
+*_20[0-9][0-9][0-9][0-9][0-9][0-9]_*.json
+*_20[0-9][0-9][0-9][0-9][0-9][0-9]_*.txt
+*_20[0-9][0-9][0-9][0-9][0-9][0-9]_*.log
+
+# Cleanup artifacts
+cleanup_backups/
+cleanup_logs/
+stage*_backup_*.tar.gz
+stage*_remove_*.sh
+cleanup_script.sh
+final_validation_and_metrics.sh
+# Cleanup directories
+*.cleanup.log

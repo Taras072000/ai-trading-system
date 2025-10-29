@@ -1,0 +1,136 @@
+{
+  "timestamp": "2025-10-29T13:22:19.297827",
+  "system_status": "acceptable",
+  "test_statistics": {
+    "total_tests": 7,
+    "passed": 5,
+    "failed": 1,
+    "warnings": 1,
+    "success_rate": 0.7142857142857143,
+    "total_execution_time": 0.10815486907958985
+  },
+  "performance_metrics": {
+    "win_rate": 0.772,
+    "roi": 14.957435497896466,
+    "max_drawdown": 0.091982644147792,
+    "sharpe_ratio": 16.28047911924093,
+    "profit_factor": 7.3441942940328016,
+    "total_trades": 500,
+    "avg_trade_duration": 4.1523356473096245,
+    "volatility": 0.46304211539023193,
+    "calmar_ratio": 162.61149738056875,
+    "sortino_ratio": 175.84784015431967
+  },
+  "test_results": [
+    {
+      "test_name": "component_initialization",
+      "status": "passed",
+      "execution_time": 0.1,
+      "details": {
+        "components": [
+          "parameter_optimizer",
+          "multi_timeframe_analyzer",
+          "adaptive_market_manager"
+        ]
+      },
+      "error_message": null,
+      "timestamp": "2025-10-29 13:22:19.289268"
+    },
+    {
+      "test_name": "parameter_optimizer",
+      "status": "passed",
+      "execution_time": 3.0994415283203125e-06,
+      "details": {
+        "bayesian_optimization": true,
+        "genetic_algorithm": true,
+        "ml_adaptive": true,
+        "optimization_methods": 3
+      },
+      "error_message": null,
+      "timestamp": "2025-10-29 13:22:19.289328"
+    },
+    {
+      "test_name": "multi_timeframe_analyzer",
+      "status": "failed",
+      "execution_time": 0.0009758472442626953,
+      "details": {},
+      "error_message": "'str' object has no attribute 'value'",
+      "timestamp": "2025-10-29 13:22:19.290333"
+    },
+    {
+      "test_name": "adaptive_market_manager",
+      "status": "passed",
+      "execution_time": 0.0004279613494873047,
+      "details": {
+        "symbols_analyzed": 2,
+        "strategies_adapted": 2,
+        "portfolio_allocations": 2,
+        "market_types_detected": [
+          "trending",
+          "trending"
+        ],
+        "average_confidence": 0.8
+      },
+      "error_message": null,
+      "timestamp": "2025-10-29 13:22:19.290863"
+    },
+    {
+      "test_name": "system_integration",
+      "status": "passed",
+      "execution_time": 0.0011210441589355469,
+      "details": {
+        "market_analysis": 2,
+        "strategy_adaptation": 2,
+        "parameter_optimization": 2,
+        "mtf_analysis": 2,
+        "portfolio_optimization": 2,
+        "full_cycle_completed": true
+      },
+      "error_message": null,
+      "timestamp": "2025-10-29 13:22:19.292028"
+    },
+    {
+      "test_name": "system_performance",
+      "status": "warning",
+      "execution_time": 0.004970073699951172,
+      "details": {
+        "win_rate": 0.772,
+        "roi": 14.957435497896466,
+        "max_drawdown": 0.091982644147792,
+        "sharpe_ratio": 16.28047911924093,
+        "profit_factor": 7.3441942940328016,
+        "meets_targets": "False",
+        "total_trades": 500
+      },
+      "error_message": null,
+      "timestamp": "2025-10-29 13:22:19.297058"
+    },
+    {
+      "test_name": "system_stress",
+      "status": "passed",
+      "execution_time": 0.0006568431854248047,
+      "details": {
+        "crisis_handling": true,
+        "volatility_handling": true,
+        "large_scale_performance": true,
+        "large_scale_time": 0.00017309188842773438,
+        "symbols_processed": 4
+      },
+      "error_message": null,
+      "timestamp": "2025-10-29 13:22:19.297794"
+    }
+  ],
+  "recommendations": [
+    "Исправить 1 неудачных тестов перед продуктивным использованием",
+    "Рассмотреть 1 предупреждений для улучшения системы",
+    "Провести дополнительную оптимизацию для достижения целевых метрик",
+    "Улучшить управление рисками для снижения просадки"
+  ],
+  "readiness_assessment": {
+    "readiness_score": 79.57142857142857,
+    "max_score": 100,
+    "readiness_percentage": 79.57142857142857,
+    "readiness_level": "needs_improvement",
+    "description": "Система требует улучшений перед продуктивным использованием"
+  }
+}

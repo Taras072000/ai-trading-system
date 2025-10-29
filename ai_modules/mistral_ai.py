@@ -1117,6 +1117,20 @@ class MistralAI:
                 'metadata': {}
             }
 
+    def clear_all_cache(self):
+        """Полная очистка всех кешей MistralAI"""
+        try:
+            # Очистка кеша ответов
+            self.memory_manager.response_cache.clear()
+            
+            # Принудительная сборка мусора
+            gc.collect()
+            
+            logger.info("MistralAI: Все кеши очищены")
+            
+        except Exception as e:
+            logger.error(f"Ошибка очистки кешей MistralAI: {e}")
+
     async def get_model_info(self) -> Dict[str, Any]:
         """Информация о локальной модели"""
         return {

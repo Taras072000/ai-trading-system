@@ -13,6 +13,7 @@ import gc
 from dataclasses import dataclass
 import config
 from config_params import CONFIG_PARAMS
+from utils.indicators_cache import indicators_cache
 
 logger = logging.getLogger(__name__)
 
@@ -169,17 +170,29 @@ class TradingAI:
         # Используем только последние данные для экономии памяти
         recent_data = data.tail(50).copy()
         
-        # Быстрые технические индикаторы
-        sma_5 = recent_data['close'].rolling(5).mean().iloc[-1]
-        sma_20 = recent_data['close'].rolling(20).mean().iloc[-1]
+        # Быстрые технические индикаторы с использованием кэша
+        sma_5_series = indicators_cache.get_sma(symbol, recent_data, 5)
+        sma_20_series = indicators_cache.get_sma(symbol, recent_data, 20)
         current_price = recent_data['close'].iloc[-1]
         
-        # Простой RSI
-        delta = recent_data['close'].diff()
-        gain = (delta.where(delta > 0, 0)).rolling(14).mean()
-        loss = (-delta.where(delta < 0, 0)).rolling(14).mean()
-        rs = gain / loss
-        rsi = 100 - (100 / (1 + rs)).iloc[-1]
+        # RSI с использованием кэша
+        rsi_series = indicators_cache.get_rsi(symbol, recent_data, 14)
+        
+        # Проверяем валидность индикаторов и извлекаем последние значения
+        if sma_5_series is None or sma_20_series is None or rsi_series is None:
+            return TradingSignal(
+                symbol=symbol,
+                action='HOLD',
+                confidence=0.0,
+                price=current_price,
+                timestamp=datetime.now(),
+                reason="Недостаточно данных для расчета индикаторов"
+            )
+        
+        # Извлекаем последние значения
+        sma_5 = sma_5_series.iloc[-1]
+        sma_20 = sma_20_series.iloc[-1]
+        rsi = rsi_series.iloc[-1]
         
         # Логика принятия решений - СНИЖАЕМ ПОРОГИ для более активной торговли
         action = 'HOLD'
@@ -192,25 +205,25 @@ class TradingAI:
         current_volume = recent_data.get('volume', pd.Series([1])).iloc[-1] if 'volume' in recent_data.columns else 1
         volume_ratio = current_volume / volume_avg if volume_avg > 0 else 1
         
-        # СНИЖЕНЫ ПОРОГИ: более агрессивная торговля
-        if sma_5 > sma_20 and rsi < 75:  # Было rsi < 70
+        # Оптимизированные пороги для лучшего качества сигналов
+        if sma_5 > sma_20 and rsi < 65:  # Оптимизировано с 75 до 65
             # Дополнительные условия для BUY
             if price_change > -2 or volume_ratio > 1.1:  # Добавлены альтернативные условия
                 action = 'BUY'
                 # Увеличиваем confidence на основе силы сигнала
-                base_confidence = (sma_5 - sma_20) / sma_20 * 20  # Увеличен множитель с 10 до 20
-                rsi_bonus = (70 - rsi) / 70 * 0.2 if rsi < 70 else 0
+                base_confidence = (sma_5 - sma_20) / sma_20 * 10  # Оптимизирован множитель с 20 до 10
+                rsi_bonus = (65 - rsi) / 65 * 0.2 if rsi < 65 else 0
                 volume_bonus = min(0.1, (volume_ratio - 1) * 0.1) if volume_ratio > 1 else 0
                 confidence = min(0.85, 0.5 + base_confidence + rsi_bonus + volume_bonus)
                 reason = f"BUY: SMA5 > SMA20 ({(sma_5/sma_20-1)*100:.1f}%), RSI: {rsi:.1f}, Vol: {volume_ratio:.1f}x"
         
-        elif sma_5 < sma_20 and rsi > 25:  # Было rsi > 30
+        elif sma_5 < sma_20 and rsi > 35:  # Оптимизировано с 25 до 35
             # Дополнительные условия для SELL
             if price_change < 2 or volume_ratio > 1.1:  # Добавлены альтернативные условия
                 action = 'SELL'
                 # Увеличиваем confidence на основе силы сигнала
-                base_confidence = (sma_20 - sma_5) / sma_20 * 20  # Увеличен множитель с 10 до 20
-                rsi_bonus = (rsi - 30) / 70 * 0.2 if rsi > 30 else 0
+                base_confidence = (sma_20 - sma_5) / sma_20 * 10  # Оптимизирован множитель с 20 до 10
+                rsi_bonus = (rsi - 35) / 65 * 0.2 if rsi > 35 else 0
                 volume_bonus = min(0.1, (volume_ratio - 1) * 0.1) if volume_ratio > 1 else 0
                 confidence = min(0.85, 0.5 + base_confidence + rsi_bonus + volume_bonus)
                 reason = f"SELL: SMA5 < SMA20 ({(1-sma_5/sma_20)*100:.1f}%), RSI: {rsi:.1f}, Vol: {volume_ratio:.1f}x"
@@ -265,26 +278,31 @@ class TradingAI:
             if current_price is None:
                 current_price = data['close'].iloc[-1]
             
-            # Расчет волатильности
-            returns = data['close'].pct_change().dropna()
-            volatility = returns.std() * np.sqrt(24 * 60)  # Дневная волатильность для 1m данных
+            # Расчет волатильности с использованием кэша
+            volatility = indicators_cache.get_volatility(symbol, data, period=20, method='daily_std')
+            if volatility is None:
+                volatility = 0.02  # Значение по умолчанию
             
-            # Расчет ATR для стоп-лосса
-            high_low = data['high'] - data['low']
-            high_close = np.abs(data['high'] - data['close'].shift())
-            low_close = np.abs(data['low'] - data['close'].shift())
-            true_range = np.maximum(high_low, np.maximum(high_close, low_close))
-            atr = true_range.rolling(14).mean().iloc[-1]
+            # Расчет ATR для стоп-лосса с использованием кэша (оптимизировано до 2.5 ATR)
+            atr = indicators_cache.get_atr(symbol, data, period=14)
+            if atr is None:
+                atr = current_price * 0.02  # Значение по умолчанию 2% от цены
             
-            # Рекомендации по управлению рисками
+            # Рекомендации по управлению рисками с оптимизированными параметрами
             risk_level = "LOW" if volatility < 0.02 else "MEDIUM" if volatility < 0.05 else "HIGH"
+            
+            # Максимальная позиция: 5% от капитала
+            max_position_size = 0.05
+            recommended_position_size = min(max_position_size, 0.03 if risk_level == "LOW" else 0.02 if risk_level == "MEDIUM" else 0.01)
             
             return {
                 'risk_level': risk_level,
                 'volatility': float(volatility),
                 'atr': float(atr),
-                'recommended_stop_loss': float(current_price - atr * 2),
-                'recommended_position_size': 0.02 if risk_level == "LOW" else 0.01,
+                'recommended_stop_loss': float(current_price - atr * 2.5),  # Оптимизировано до 2.5 ATR
+                'recommended_position_size': recommended_position_size,
+                'max_position_size': max_position_size,  # 5% от капитала
+                'daily_loss_limit': 0.03,  # Дневной лимит убытков: 3%
                 'confidence': 0.8,
                 'timestamp': datetime.now()
             }

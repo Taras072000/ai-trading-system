@@ -1,0 +1,715 @@
+{
+  "timestamp": "2025-10-29T23:41:43.493595",
+  "test_suite": "Final Comprehensive Test Suite",
+  "system_version": "Peper Binance v4 (All 5 Phases)",
+  "total_execution_time": 1.637497901916504,
+  "assessment": {
+    "readiness_score": 86.66666666666666,
+    "readiness_level": "mostly_ready",
+    "description": "Система почти готова, требуются минимальные доработки",
+    "total_tests": 9,
+    "passed_tests": 7,
+    "warning_tests": 2,
+    "failed_tests": 0,
+    "success_rate": 0.7777777777777778
+  },
+  "system_metrics": {
+    "win_rate": 0.0,
+    "roi": 0.0,
+    "max_drawdown": 0.0,
+    "sharpe_ratio": 0.0,
+    "profit_factor": 0.0,
+    "total_trades": 0,
+    "response_time_ms": 135.38582266866882,
+    "memory_usage_mb": 525.4264339045012,
+    "cpu_usage_percent": 48.9475493258576,
+    "uptime_hours": 0.0,
+    "code_coverage": 0.0,
+    "test_coverage": 0.0,
+    "security_score": 100.0,
+    "compliance_score": 0.0
+  },
+  "test_statistics": {
+    "total_tests": 9,
+    "passed_tests": 7,
+    "warning_tests": 2,
+    "failed_tests": 0,
+    "skipped_tests": 0,
+    "success_rate": 0.7777777777777778
+  },
+  "phase_statistics": {
+    "phase1": {
+      "total_tests": 1,
+      "passed_tests": 1,
+      "success_rate": 1.0,
+      "phase_name": "Базовая торговая система"
+    },
+    "phase2": {
+      "total_tests": 1,
+      "passed_tests": 1,
+      "success_rate": 1.0,
+      "phase_name": "AI модули и оптимизация"
+    },
+    "phase3": {
+      "total_tests": 1,
+      "passed_tests": 1,
+      "success_rate": 1.0,
+      "phase_name": "Продвинутая аналитика"
+    },
+    "phase4": {
+      "total_tests": 1,
+      "passed_tests": 1,
+      "success_rate": 1.0,
+      "phase_name": "Enterprise компоненты"
+    },
+    "phase5": {
+      "total_tests": 1,
+      "passed_tests": 0,
+      "success_rate": 0.0,
+      "phase_name": "Глобальные компоненты"
+    },
+    "integration": {
+      "total_tests": 1,
+      "passed_tests": 1,
+      "success_rate": 1.0,
+      "phase_name": "integration"
+    },
+    "performance": {
+      "total_tests": 1,
+      "passed_tests": 0,
+      "success_rate": 0.0,
+      "phase_name": "performance"
+    },
+    "security": {
+      "total_tests": 1,
+      "passed_tests": 1,
+      "success_rate": 1.0,
+      "phase_name": "security"
+    },
+    "stress": {
+      "total_tests": 1,
+      "passed_tests": 1,
+      "success_rate": 1.0,
+      "phase_name": "stress"
+    }
+  },
+  "results_by_phase": {
+    "phase1": [
+      {
+        "test_name": "phase1_base_components",
+        "phase": "phase1",
+        "status": "passed",
+        "execution_time": 0.10123705863952637,
+        "details": {
+          "missing_files": [],
+          "config_status": true,
+          "api_status": true,
+          "files_checked": 4
+        },
+        "error_message": null,
+        "timestamp": "2025-10-29 23:41:41.957095"
+      }
+    ],
+    "phase2": [
+      {
+        "test_name": "phase2_ai_modules",
+        "phase": "phase2",
+        "status": "passed",
+        "execution_time": 0.0005669593811035156,
+        "details": {
+          "available_modules": 7,
+          "total_modules": 7,
+          "coverage": 1.0,
+          "models_status": true,
+          "rl_status": true
+        },
+        "error_message": null,
+        "timestamp": "2025-10-29 23:41:41.957777"
+      }
+    ],
+    "phase3": [
+      {
+        "test_name": "phase3_analytics",
+        "phase": "phase3",
+        "status": "passed",
+        "execution_time": 0.0016870498657226562,
+        "details": {
+          "available_components": 5,
+          "total_components": 5,
+          "coverage": 1.0,
+          "existing_test_results": {
+            "timestamp": "2025-10-29T13:22:19.297827",
+            "system_status": "acceptable",
+            "test_statistics": {
+              "total_tests": 7,
+              "passed": 5,
+              "failed": 1,
+              "warnings": 1,
+              "success_rate": 0.7142857142857143,
+              "total_execution_time": 0.10815486907958985
+            },
+            "performance_metrics": {
+              "win_rate": 0.772,
+              "roi": 14.957435497896466,
+              "max_drawdown": 0.091982644147792,
+              "sharpe_ratio": 16.28047911924093,
+              "profit_factor": 7.3441942940328016,
+              "total_trades": 500,
+              "avg_trade_duration": 4.1523356473096245,
+              "volatility": 0.46304211539023193,
+              "calmar_ratio": 162.61149738056875,
+              "sortino_ratio": 175.84784015431967
+            },
+            "test_results": [
+              {
+                "test_name": "component_initialization",
+                "status": "passed",
+                "execution_time": 0.1,
+                "details": {
+                  "components": [
+                    "parameter_optimizer",
+                    "multi_timeframe_analyzer",
+                    "adaptive_market_manager"
+                  ]
+                },
+                "error_message": null,
+                "timestamp": "2025-10-29 13:22:19.289268"
+              },
+              {
+                "test_name": "parameter_optimizer",
+                "status": "passed",
+                "execution_time": 3.0994415283203125e-06,
+                "details": {
+                  "bayesian_optimization": true,
+                  "genetic_algorithm": true,
+                  "ml_adaptive": true,
+                  "optimization_methods": 3
+                },
+                "error_message": null,
+                "timestamp": "2025-10-29 13:22:19.289328"
+              },
+              {
+                "test_name": "multi_timeframe_analyzer",
+                "status": "failed",
+                "execution_time": 0.0009758472442626953,
+                "details": {},
+                "error_message": "'str' object has no attribute 'value'",
+                "timestamp": "2025-10-29 13:22:19.290333"
+              },
+              {
+                "test_name": "adaptive_market_manager",
+                "status": "passed",
+                "execution_time": 0.0004279613494873047,
+                "details": {
+                  "symbols_analyzed": 2,
+                  "strategies_adapted": 2,
+                  "portfolio_allocations": 2,
+                  "market_types_detected": [
+                    "trending",
+                    "trending"
+                  ],
+                  "average_confidence": 0.8
+                },
+                "error_message": null,
+                "timestamp": "2025-10-29 13:22:19.290863"
+              },
+              {
+                "test_name": "system_integration",
+                "status": "passed",
+                "execution_time": 0.0011210441589355469,
+                "details": {
+                  "market_analysis": 2,
+                  "strategy_adaptation": 2,
+                  "parameter_optimization": 2,
+                  "mtf_analysis": 2,
+                  "portfolio_optimization": 2,
+                  "full_cycle_completed": true
+                },
+                "error_message": null,
+                "timestamp": "2025-10-29 13:22:19.292028"
+              },
+              {
+                "test_name": "system_performance",
+                "status": "warning",
+                "execution_time": 0.004970073699951172,
+                "details": {
+                  "win_rate": 0.772,
+                  "roi": 14.957435497896466,
+                  "max_drawdown": 0.091982644147792,
+                  "sharpe_ratio": 16.28047911924093,
+                  "profit_factor": 7.3441942940328016,
+                  "meets_targets": "False",
+                  "total_trades": 500
+                },
+                "error_message": null,
+                "timestamp": "2025-10-29 13:22:19.297058"
+              },
+              {
+                "test_name": "system_stress",
+                "status": "passed",
+                "execution_time": 0.0006568431854248047,
+                "details": {
+                  "crisis_handling": true,
+                  "volatility_handling": true,
+                  "large_scale_performance": true,
+                  "large_scale_time": 0.00017309188842773438,
+                  "symbols_processed": 4
+                },
+                "error_message": null,
+                "timestamp": "2025-10-29 13:22:19.297794"
+              }
+            ],
+            "recommendations": [
+              "Исправить 1 неудачных тестов перед продуктивным использованием",
+              "Рассмотреть 1 предупреждений для улучшения системы",
+              "Провести дополнительную оптимизацию для достижения целевых метрик",
+              "Улучшить управление рисками для снижения просадки"
+            ],
+            "readiness_assessment": {
+              "readiness_score": 79.57142857142857,
+              "max_score": 100,
+              "readiness_percentage": 79.57142857142857,
+              "readiness_level": "needs_improvement",
+              "description": "Система требует улучшений перед продуктивным использованием"
+            }
+          }
+        },
+        "error_message": null,
+        "timestamp": "2025-10-29 23:41:41.959506"
+      }
+    ],
+    "phase4": [
+      {
+        "test_name": "phase4_enterprise",
+        "phase": "phase4",
+        "status": "passed",
+        "execution_time": 0.10187602043151855,
+        "details": {
+          "available_components": 7,
+          "total_components": 7,
+          "coverage": 1.0,
+          "scalability_status": true,
+          "monitoring_status": true
+        },
+        "error_message": null,
+        "timestamp": "2025-10-29 23:41:42.061447"
+      }
+    ],
+    "phase5": [
+      {
+        "test_name": "phase5_global",
+        "phase": "phase5",
+        "status": "warning",
+        "execution_time": 0.003640890121459961,
+        "details": {
+          "available_components": 8,
+          "total_components": 8,
+          "coverage": 1.0,
+          "phase5_test_results": {
+            "total_tests": 11,
+            "passed_tests": 0,
+            "failed_tests": 11,
+            "success_rate": 0.0,
+            "total_duration_seconds": 0.014083,
+            "test_timestamp": "2025-10-29T16:05:10.542900",
+            "total_files_found": 0,
+            "total_components_tested": 44,
+            "phase5_readiness": "NEEDS_WORK"
+          },
+          "phase5_status": "failed"
+        },
+        "error_message": null,
+        "timestamp": "2025-10-29 23:41:42.065862"
+      }
+    ],
+    "integration": [
+      {
+        "test_name": "system_integration",
+        "phase": "integration",
+        "status": "passed",
+        "execution_time": 0.408703088760376,
+        "details": {
+          "passed_tests": 4,
+          "total_tests": 4,
+          "success_rate": 1.0,
+          "integration_results": [
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "error_message": null,
+        "timestamp": "2025-10-29 23:41:42.474768"
+      }
+    ],
+    "performance": [
+      {
+        "test_name": "performance_testing",
+        "phase": "performance",
+        "status": "warning",
+        "execution_time": 0.20316314697265625,
+        "details": {
+          "performance_metrics": {
+            "response_time": 135.38582266866882,
+            "throughput": 1013.3733354550459,
+            "memory_usage": 525.4264339045012,
+            "cpu_usage": 48.9475493258576
+          },
+          "meets_requirements": false
+        },
+        "error_message": null,
+        "timestamp": "2025-10-29 23:41:42.678056"
+      }
+    ],
+    "security": [
+      {
+        "test_name": "security_testing",
+        "phase": "security",
+        "status": "passed",
+        "execution_time": 0.4091050624847412,
+        "details": {
+          "security_checks": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "security_score": 1.0,
+          "passed_checks": 4,
+          "total_checks": 4
+        },
+        "error_message": null,
+        "timestamp": "2025-10-29 23:41:43.087418"
+      }
+    ],
+    "stress": [
+      {
+        "test_name": "stress_testing",
+        "phase": "stress",
+        "status": "passed",
+        "execution_time": 0.4050788879394531,
+        "details": {
+          "stress_tests": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "stress_score": 1.0,
+          "passed_tests": 4,
+          "total_tests": 4
+        },
+        "error_message": null,
+        "timestamp": "2025-10-29 23:41:43.492835"
+      }
+    ]
+  },
+  "all_test_results": [
+    {
+      "test_name": "phase1_base_components",
+      "phase": "phase1",
+      "status": "passed",
+      "execution_time": 0.10123705863952637,
+      "details": {
+        "missing_files": [],
+        "config_status": true,
+        "api_status": true,
+        "files_checked": 4
+      },
+      "error_message": null,
+      "timestamp": "2025-10-29 23:41:41.957095"
+    },
+    {
+      "test_name": "phase2_ai_modules",
+      "phase": "phase2",
+      "status": "passed",
+      "execution_time": 0.0005669593811035156,
+      "details": {
+        "available_modules": 7,
+        "total_modules": 7,
+        "coverage": 1.0,
+        "models_status": true,
+        "rl_status": true
+      },
+      "error_message": null,
+      "timestamp": "2025-10-29 23:41:41.957777"
+    },
+    {
+      "test_name": "phase3_analytics",
+      "phase": "phase3",
+      "status": "passed",
+      "execution_time": 0.0016870498657226562,
+      "details": {
+        "available_components": 5,
+        "total_components": 5,
+        "coverage": 1.0,
+        "existing_test_results": {
+          "timestamp": "2025-10-29T13:22:19.297827",
+          "system_status": "acceptable",
+          "test_statistics": {
+            "total_tests": 7,
+            "passed": 5,
+            "failed": 1,
+            "warnings": 1,
+            "success_rate": 0.7142857142857143,
+            "total_execution_time": 0.10815486907958985
+          },
+          "performance_metrics": {
+            "win_rate": 0.772,
+            "roi": 14.957435497896466,
+            "max_drawdown": 0.091982644147792,
+            "sharpe_ratio": 16.28047911924093,
+            "profit_factor": 7.3441942940328016,
+            "total_trades": 500,
+            "avg_trade_duration": 4.1523356473096245,
+            "volatility": 0.46304211539023193,
+            "calmar_ratio": 162.61149738056875,
+            "sortino_ratio": 175.84784015431967
+          },
+          "test_results": [
+            {
+              "test_name": "component_initialization",
+              "status": "passed",
+              "execution_time": 0.1,
+              "details": {
+                "components": [
+                  "parameter_optimizer",
+                  "multi_timeframe_analyzer",
+                  "adaptive_market_manager"
+                ]
+              },
+              "error_message": null,
+              "timestamp": "2025-10-29 13:22:19.289268"
+            },
+            {
+              "test_name": "parameter_optimizer",
+              "status": "passed",
+              "execution_time": 3.0994415283203125e-06,
+              "details": {
+                "bayesian_optimization": true,
+                "genetic_algorithm": true,
+                "ml_adaptive": true,
+                "optimization_methods": 3
+              },
+              "error_message": null,
+              "timestamp": "2025-10-29 13:22:19.289328"
+            },
+            {
+              "test_name": "multi_timeframe_analyzer",
+              "status": "failed",
+              "execution_time": 0.0009758472442626953,
+              "details": {},
+              "error_message": "'str' object has no attribute 'value'",
+              "timestamp": "2025-10-29 13:22:19.290333"
+            },
+            {
+              "test_name": "adaptive_market_manager",
+              "status": "passed",
+              "execution_time": 0.0004279613494873047,
+              "details": {
+                "symbols_analyzed": 2,
+                "strategies_adapted": 2,
+                "portfolio_allocations": 2,
+                "market_types_detected": [
+                  "trending",
+                  "trending"
+                ],
+                "average_confidence": 0.8
+              },
+              "error_message": null,
+              "timestamp": "2025-10-29 13:22:19.290863"
+            },
+            {
+              "test_name": "system_integration",
+              "status": "passed",
+              "execution_time": 0.0011210441589355469,
+              "details": {
+                "market_analysis": 2,
+                "strategy_adaptation": 2,
+                "parameter_optimization": 2,
+                "mtf_analysis": 2,
+                "portfolio_optimization": 2,
+                "full_cycle_completed": true
+              },
+              "error_message": null,
+              "timestamp": "2025-10-29 13:22:19.292028"
+            },
+            {
+              "test_name": "system_performance",
+              "status": "warning",
+              "execution_time": 0.004970073699951172,
+              "details": {
+                "win_rate": 0.772,
+                "roi": 14.957435497896466,
+                "max_drawdown": 0.091982644147792,
+                "sharpe_ratio": 16.28047911924093,
+                "profit_factor": 7.3441942940328016,
+                "meets_targets": "False",
+                "total_trades": 500
+              },
+              "error_message": null,
+              "timestamp": "2025-10-29 13:22:19.297058"
+            },
+            {
+              "test_name": "system_stress",
+              "status": "passed",
+              "execution_time": 0.0006568431854248047,
+              "details": {
+                "crisis_handling": true,
+                "volatility_handling": true,
+                "large_scale_performance": true,
+                "large_scale_time": 0.00017309188842773438,
+                "symbols_processed": 4
+              },
+              "error_message": null,
+              "timestamp": "2025-10-29 13:22:19.297794"
+            }
+          ],
+          "recommendations": [
+            "Исправить 1 неудачных тестов перед продуктивным использованием",
+            "Рассмотреть 1 предупреждений для улучшения системы",
+            "Провести дополнительную оптимизацию для достижения целевых метрик",
+            "Улучшить управление рисками для снижения просадки"
+          ],
+          "readiness_assessment": {
+            "readiness_score": 79.57142857142857,
+            "max_score": 100,
+            "readiness_percentage": 79.57142857142857,
+            "readiness_level": "needs_improvement",
+            "description": "Система требует улучшений перед продуктивным использованием"
+          }
+        }
+      },
+      "error_message": null,
+      "timestamp": "2025-10-29 23:41:41.959506"
+    },
+    {
+      "test_name": "phase4_enterprise",
+      "phase": "phase4",
+      "status": "passed",
+      "execution_time": 0.10187602043151855,
+      "details": {
+        "available_components": 7,
+        "total_components": 7,
+        "coverage": 1.0,
+        "scalability_status": true,
+        "monitoring_status": true
+      },
+      "error_message": null,
+      "timestamp": "2025-10-29 23:41:42.061447"
+    },
+    {
+      "test_name": "phase5_global",
+      "phase": "phase5",
+      "status": "warning",
+      "execution_time": 0.003640890121459961,
+      "details": {
+        "available_components": 8,
+        "total_components": 8,
+        "coverage": 1.0,
+        "phase5_test_results": {
+          "total_tests": 11,
+          "passed_tests": 0,
+          "failed_tests": 11,
+          "success_rate": 0.0,
+          "total_duration_seconds": 0.014083,
+          "test_timestamp": "2025-10-29T16:05:10.542900",
+          "total_files_found": 0,
+          "total_components_tested": 44,
+          "phase5_readiness": "NEEDS_WORK"
+        },
+        "phase5_status": "failed"
+      },
+      "error_message": null,
+      "timestamp": "2025-10-29 23:41:42.065862"
+    },
+    {
+      "test_name": "system_integration",
+      "phase": "integration",
+      "status": "passed",
+      "execution_time": 0.408703088760376,
+      "details": {
+        "passed_tests": 4,
+        "total_tests": 4,
+        "success_rate": 1.0,
+        "integration_results": [
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "error_message": null,
+      "timestamp": "2025-10-29 23:41:42.474768"
+    },
+    {
+      "test_name": "performance_testing",
+      "phase": "performance",
+      "status": "warning",
+      "execution_time": 0.20316314697265625,
+      "details": {
+        "performance_metrics": {
+          "response_time": 135.38582266866882,
+          "throughput": 1013.3733354550459,
+          "memory_usage": 525.4264339045012,
+          "cpu_usage": 48.9475493258576
+        },
+        "meets_requirements": false
+      },
+      "error_message": null,
+      "timestamp": "2025-10-29 23:41:42.678056"
+    },
+    {
+      "test_name": "security_testing",
+      "phase": "security",
+      "status": "passed",
+      "execution_time": 0.4091050624847412,
+      "details": {
+        "security_checks": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "security_score": 1.0,
+        "passed_checks": 4,
+        "total_checks": 4
+      },
+      "error_message": null,
+      "timestamp": "2025-10-29 23:41:43.087418"
+    },
+    {
+      "test_name": "stress_testing",
+      "phase": "stress",
+      "status": "passed",
+      "execution_time": 0.4050788879394531,
+      "details": {
+        "stress_tests": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "stress_score": 1.0,
+        "passed_tests": 4,
+        "total_tests": 4
+      },
+      "error_message": null,
+      "timestamp": "2025-10-29 23:41:43.492835"
+    }
+  ],
+  "recommendations": [
+    "🟡 Внимание: Рассмотреть 2 предупреждений для улучшения системы",
+    "📈 Повысить общий уровень готовности системы",
+    "⚡ Оптимизировать производительность для снижения времени отклика",
+    "🌍 Стабилизировать глобальные компоненты",
+    "✅ Система почти готова, выполните финальные доработки"
+  ],
+  "production_readiness": {
+    "ready_for_production": true,
+    "readiness_score": 86.66666666666666,
+    "readiness_level": "mostly_ready",
+    "description": "Система почти готова, требуются минимальные доработки"
+  }
+}
